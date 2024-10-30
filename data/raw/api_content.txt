@@ -1,0 +1,5746 @@
+ 
+
+source: https://pytorch.org/text/stable/nn_modules.html 
+content: 
+
+torchtext.nn¶
+MultiheadAttentionContainer¶
+
+class torchtext.nn.MultiheadAttentionContainer(nhead, in_proj_container, attention_layer, out_proj, batch_first=False)[source]¶
+
+
+__init__(nhead, in_proj_container, attention_layer, out_proj, batch_first=False) → None[source]¶
+A multi-head attention container
+
+Parameters:
+
+nhead – the number of heads in the multiheadattention model
+in_proj_container – A container of multi-head in-projection linear layers (a.k.a nn.Linear).
+attention_layer – The custom attention layer. The input sent from MHA container to the attention layer
+is in the shape of (…, L, N * H, E / H) for query and (…, S, N * H, E / H) for key/value
+while the  output shape of the attention layer is expected to be (…, L, N * H, E / H).
+The attention_layer needs to support broadcast if users want the overall MultiheadAttentionContainer
+with broadcast.
+out_proj – The multi-head out-projection layer (a.k.a nn.Linear).
+batch_first – If True, then the input and output tensors are provided
+as (…, N, L, E). Default: False
+
+
+
+
+Examples::>>> import torch
+>>> from torchtext.nn import MultiheadAttentionContainer, InProjContainer, ScaledDotProduct
+>>> embed_dim, num_heads, bsz = 10, 5, 64
+>>> in_proj_container = InProjContainer(torch.nn.Linear(embed_dim, embed_dim),
+                                        torch.nn.Linear(embed_dim, embed_dim),
+                                        torch.nn.Linear(embed_dim, embed_dim))
+>>> MHA = MultiheadAttentionContainer(num_heads,
+                                      in_proj_container,
+                                      ScaledDotProduct(),
+                                      torch.nn.Linear(embed_dim, embed_dim))
+>>> query = torch.rand((21, bsz, embed_dim))
+>>> key = value = torch.rand((16, bsz, embed_dim))
+>>> attn_output, attn_weights = MHA(query, key, value)
+>>> print(attn_output.shape)
+>>> torch.Size([21, 64, 10])
+
+
+
+
+
+
+
+forward(query: Tensor, key: Tensor, value: Tensor, attn_mask: Optional[Tensor] = None, bias_k: Optional[Tensor] = None, bias_v: Optional[Tensor] = None) → Tuple[Tensor, Tensor][source]¶
+
+Parameters:
+
+query (Tensor) – The query of the attention function.
+See “Attention Is All You Need” for more details.
+key (Tensor) – The keys of the attention function.
+See “Attention Is All You Need” for more details.
+value (Tensor) – The values of the attention function.
+See “Attention Is All You Need” for more details.
+attn_mask (BoolTensor, optional) – 3D mask that prevents attention to certain positions.
+bias_k (Tensor, optional) – one more key and value sequence to be added to keys at
+sequence dim (dim=-3). Those are used for incremental decoding. Users should provide
+bias_v.
+bias_v (Tensor, optional) – one more key and value sequence to be added to values at
+sequence dim (dim=-3). Those are used for incremental decoding. Users should also provide
+bias_k.
+
+
+
+Shape:
+
+
+Inputs:
+
+
+query: \((..., L, N, E)\)
+key: \((..., S, N, E)\)
+value: \((..., S, N, E)\)
+attn_mask, bias_k and bias_v: same with the shape of the corresponding args in attention layer.
+
+
+
+Outputs:
+
+
+attn_output: \((..., L, N, E)\)
+attn_output_weights: \((N * H, L, S)\)
+
+
+
+
+Note: It’s optional to have the query/key/value inputs with more than three dimensions (for broadcast purpose).
+The MultiheadAttentionContainer module will operate on the last three dimensions.
+where where L is the target length, S is the sequence length, H is the number of attention heads,
+N is the batch size, and E is the embedding dimension.
+
+
+
+
+__init__(nhead, in_proj_container, attention_layer, out_proj, batch_first=False) → None[source]¶
+A multi-head attention container
+
+Parameters:
+
+nhead – the number of heads in the multiheadattention model
+in_proj_container – A container of multi-head in-projection linear layers (a.k.a nn.Linear).
+attention_layer – The custom attention layer. The input sent from MHA container to the attention layer
+is in the shape of (…, L, N * H, E / H) for query and (…, S, N * H, E / H) for key/value
+while the  output shape of the attention layer is expected to be (…, L, N * H, E / H).
+The attention_layer needs to support broadcast if users want the overall MultiheadAttentionContainer
+with broadcast.
+out_proj – The multi-head out-projection layer (a.k.a nn.Linear).
+batch_first – If True, then the input and output tensors are provided
+as (…, N, L, E). Default: False
+
+
+
+
+Examples::>>> import torch
+>>> from torchtext.nn import MultiheadAttentionContainer, InProjContainer, ScaledDotProduct
+>>> embed_dim, num_heads, bsz = 10, 5, 64
+>>> in_proj_container = InProjContainer(torch.nn.Linear(embed_dim, embed_dim),
+                                        torch.nn.Linear(embed_dim, embed_dim),
+                                        torch.nn.Linear(embed_dim, embed_dim))
+>>> MHA = MultiheadAttentionContainer(num_heads,
+                                      in_proj_container,
+                                      ScaledDotProduct(),
+                                      torch.nn.Linear(embed_dim, embed_dim))
+>>> query = torch.rand((21, bsz, embed_dim))
+>>> key = value = torch.rand((16, bsz, embed_dim))
+>>> attn_output, attn_weights = MHA(query, key, value)
+>>> print(attn_output.shape)
+>>> torch.Size([21, 64, 10])
+
+
+
+
+
+A multi-head attention container
+Parameters:
+
+nhead – the number of heads in the multiheadattention model
+in_proj_container – A container of multi-head in-projection linear layers (a.k.a nn.Linear).
+attention_layer – The custom attention layer. The input sent from MHA container to the attention layer
+is in the shape of (…, L, N * H, E / H) for query and (…, S, N * H, E / H) for key/value
+while the  output shape of the attention layer is expected to be (…, L, N * H, E / H).
+The attention_layer needs to support broadcast if users want the overall MultiheadAttentionContainer
+with broadcast.
+out_proj – The multi-head out-projection layer (a.k.a nn.Linear).
+batch_first – If True, then the input and output tensors are provided
+as (…, N, L, E). Default: False
+
+
+nhead – the number of heads in the multiheadattention model
+in_proj_container – A container of multi-head in-projection linear layers (a.k.a nn.Linear).
+attention_layer – The custom attention layer. The input sent from MHA container to the attention layer
+is in the shape of (…, L, N * H, E / H) for query and (…, S, N * H, E / H) for key/value
+while the  output shape of the attention layer is expected to be (…, L, N * H, E / H).
+The attention_layer needs to support broadcast if users want the overall MultiheadAttentionContainer
+with broadcast.
+out_proj – The multi-head out-projection layer (a.k.a nn.Linear).
+batch_first – If True, then the input and output tensors are provided
+as (…, N, L, E). Default: False
+Examples::
+>>> import torch
+>>> from torchtext.nn import MultiheadAttentionContainer, InProjContainer, ScaledDotProduct
+>>> embed_dim, num_heads, bsz = 10, 5, 64
+>>> in_proj_container = InProjContainer(torch.nn.Linear(embed_dim, embed_dim),
+                                        torch.nn.Linear(embed_dim, embed_dim),
+                                        torch.nn.Linear(embed_dim, embed_dim))
+>>> MHA = MultiheadAttentionContainer(num_heads,
+                                      in_proj_container,
+                                      ScaledDotProduct(),
+                                      torch.nn.Linear(embed_dim, embed_dim))
+>>> query = torch.rand((21, bsz, embed_dim))
+>>> key = value = torch.rand((16, bsz, embed_dim))
+>>> attn_output, attn_weights = MHA(query, key, value)
+>>> print(attn_output.shape)
+>>> torch.Size([21, 64, 10])
+
+
+
+>>> import torch
+>>> from torchtext.nn import MultiheadAttentionContainer, InProjContainer, ScaledDotProduct
+>>> embed_dim, num_heads, bsz = 10, 5, 64
+>>> in_proj_container = InProjContainer(torch.nn.Linear(embed_dim, embed_dim),
+                                        torch.nn.Linear(embed_dim, embed_dim),
+                                        torch.nn.Linear(embed_dim, embed_dim))
+>>> MHA = MultiheadAttentionContainer(num_heads,
+                                      in_proj_container,
+                                      ScaledDotProduct(),
+                                      torch.nn.Linear(embed_dim, embed_dim))
+>>> query = torch.rand((21, bsz, embed_dim))
+>>> key = value = torch.rand((16, bsz, embed_dim))
+>>> attn_output, attn_weights = MHA(query, key, value)
+>>> print(attn_output.shape)
+>>> torch.Size([21, 64, 10])
+
+
+forward(query: Tensor, key: Tensor, value: Tensor, attn_mask: Optional[Tensor] = None, bias_k: Optional[Tensor] = None, bias_v: Optional[Tensor] = None) → Tuple[Tensor, Tensor][source]¶
+
+Parameters:
+
+query (Tensor) – The query of the attention function.
+See “Attention Is All You Need” for more details.
+key (Tensor) – The keys of the attention function.
+See “Attention Is All You Need” for more details.
+value (Tensor) – The values of the attention function.
+See “Attention Is All You Need” for more details.
+attn_mask (BoolTensor, optional) – 3D mask that prevents attention to certain positions.
+bias_k (Tensor, optional) – one more key and value sequence to be added to keys at
+sequence dim (dim=-3). Those are used for incremental decoding. Users should provide
+bias_v.
+bias_v (Tensor, optional) – one more key and value sequence to be added to values at
+sequence dim (dim=-3). Those are used for incremental decoding. Users should also provide
+bias_k.
+
+
+
+Shape:
+
+
+Inputs:
+
+
+query: \((..., L, N, E)\)
+key: \((..., S, N, E)\)
+value: \((..., S, N, E)\)
+attn_mask, bias_k and bias_v: same with the shape of the corresponding args in attention layer.
+
+
+
+Outputs:
+
+
+attn_output: \((..., L, N, E)\)
+attn_output_weights: \((N * H, L, S)\)
+
+
+
+
+Note: It’s optional to have the query/key/value inputs with more than three dimensions (for broadcast purpose).
+The MultiheadAttentionContainer module will operate on the last three dimensions.
+where where L is the target length, S is the sequence length, H is the number of attention heads,
+N is the batch size, and E is the embedding dimension.
+
+
+Parameters:
+
+query (Tensor) – The query of the attention function.
+See “Attention Is All You Need” for more details.
+key (Tensor) – The keys of the attention function.
+See “Attention Is All You Need” for more details.
+value (Tensor) – The values of the attention function.
+See “Attention Is All You Need” for more details.
+attn_mask (BoolTensor, optional) – 3D mask that prevents attention to certain positions.
+bias_k (Tensor, optional) – one more key and value sequence to be added to keys at
+sequence dim (dim=-3). Those are used for incremental decoding. Users should provide
+bias_v.
+bias_v (Tensor, optional) – one more key and value sequence to be added to values at
+sequence dim (dim=-3). Those are used for incremental decoding. Users should also provide
+bias_k.
+
+
+query (Tensor) – The query of the attention function.
+See “Attention Is All You Need” for more details.
+key (Tensor) – The keys of the attention function.
+See “Attention Is All You Need” for more details.
+value (Tensor) – The values of the attention function.
+See “Attention Is All You Need” for more details.
+attn_mask (BoolTensor, optional) – 3D mask that prevents attention to certain positions.
+bias_k (Tensor, optional) – one more key and value sequence to be added to keys at
+sequence dim (dim=-3). Those are used for incremental decoding. Users should provide
+bias_v.
+bias_v (Tensor, optional) – one more key and value sequence to be added to values at
+sequence dim (dim=-3). Those are used for incremental decoding. Users should also provide
+bias_k.
+Shape:
+Inputs:
+query: \((..., L, N, E)\)
+key: \((..., S, N, E)\)
+value: \((..., S, N, E)\)
+attn_mask, bias_k and bias_v: same with the shape of the corresponding args in attention layer.
+Outputs:
+attn_output: \((..., L, N, E)\)
+attn_output_weights: \((N * H, L, S)\)
+Note: It’s optional to have the query/key/value inputs with more than three dimensions (for broadcast purpose).
+The MultiheadAttentionContainer module will operate on the last three dimensions.
+where where L is the target length, S is the sequence length, H is the number of attention heads,
+N is the batch size, and E is the embedding dimension.
+InProjContainer¶
+
+class torchtext.nn.InProjContainer(query_proj, key_proj, value_proj)[source]¶
+
+
+__init__(query_proj, key_proj, value_proj) → None[source]¶
+A in-proj container to project query/key/value in MultiheadAttention. This module happens before reshaping
+the projected query/key/value into multiple heads. See the linear layers (bottom) of Multi-head Attention in
+Fig 2 of Attention Is All You Need paper. Also check the usage example
+in torchtext.nn.MultiheadAttentionContainer.
+
+Parameters:
+
+query_proj – a proj layer for query. A typical projection layer is torch.nn.Linear.
+key_proj – a proj layer for key. A typical projection layer is torch.nn.Linear.
+value_proj – a proj layer for value. A typical projection layer is torch.nn.Linear.
+
+
+
+
+
+
+forward(query: Tensor, key: Tensor, value: Tensor) → Tuple[Tensor, Tensor, Tensor][source]¶
+Projects the input sequences using in-proj layers. query/key/value are simply passed to
+the forward func of query/key/value_proj, respectively.
+
+Parameters:
+
+query (Tensor) – The query to be projected.
+key (Tensor) – The keys to be projected.
+value (Tensor) – The values to be projected.
+
+
+
+
+Examples::>>> import torch
+>>> from torchtext.nn import InProjContainer
+>>> embed_dim, bsz = 10, 64
+>>> in_proj_container = InProjContainer(torch.nn.Linear(embed_dim, embed_dim),
+                                        torch.nn.Linear(embed_dim, embed_dim),
+                                        torch.nn.Linear(embed_dim, embed_dim))
+>>> q = torch.rand((5, bsz, embed_dim))
+>>> k = v = torch.rand((6, bsz, embed_dim))
+>>> q, k, v = in_proj_container(q, k, v)
+
+
+
+
+
+
+
+__init__(query_proj, key_proj, value_proj) → None[source]¶
+A in-proj container to project query/key/value in MultiheadAttention. This module happens before reshaping
+the projected query/key/value into multiple heads. See the linear layers (bottom) of Multi-head Attention in
+Fig 2 of Attention Is All You Need paper. Also check the usage example
+in torchtext.nn.MultiheadAttentionContainer.
+
+Parameters:
+
+query_proj – a proj layer for query. A typical projection layer is torch.nn.Linear.
+key_proj – a proj layer for key. A typical projection layer is torch.nn.Linear.
+value_proj – a proj layer for value. A typical projection layer is torch.nn.Linear.
+
+
+
+
+A in-proj container to project query/key/value in MultiheadAttention. This module happens before reshaping
+the projected query/key/value into multiple heads. See the linear layers (bottom) of Multi-head Attention in
+Fig 2 of Attention Is All You Need paper. Also check the usage example
+in torchtext.nn.MultiheadAttentionContainer.
+Parameters:
+
+query_proj – a proj layer for query. A typical projection layer is torch.nn.Linear.
+key_proj – a proj layer for key. A typical projection layer is torch.nn.Linear.
+value_proj – a proj layer for value. A typical projection layer is torch.nn.Linear.
+
+
+query_proj – a proj layer for query. A typical projection layer is torch.nn.Linear.
+key_proj – a proj layer for key. A typical projection layer is torch.nn.Linear.
+value_proj – a proj layer for value. A typical projection layer is torch.nn.Linear.
+
+forward(query: Tensor, key: Tensor, value: Tensor) → Tuple[Tensor, Tensor, Tensor][source]¶
+Projects the input sequences using in-proj layers. query/key/value are simply passed to
+the forward func of query/key/value_proj, respectively.
+
+Parameters:
+
+query (Tensor) – The query to be projected.
+key (Tensor) – The keys to be projected.
+value (Tensor) – The values to be projected.
+
+
+
+
+Examples::>>> import torch
+>>> from torchtext.nn import InProjContainer
+>>> embed_dim, bsz = 10, 64
+>>> in_proj_container = InProjContainer(torch.nn.Linear(embed_dim, embed_dim),
+                                        torch.nn.Linear(embed_dim, embed_dim),
+                                        torch.nn.Linear(embed_dim, embed_dim))
+>>> q = torch.rand((5, bsz, embed_dim))
+>>> k = v = torch.rand((6, bsz, embed_dim))
+>>> q, k, v = in_proj_container(q, k, v)
+
+
+
+
+
+Projects the input sequences using in-proj layers. query/key/value are simply passed to
+the forward func of query/key/value_proj, respectively.
+Parameters:
+
+query (Tensor) – The query to be projected.
+key (Tensor) – The keys to be projected.
+value (Tensor) – The values to be projected.
+
+
+query (Tensor) – The query to be projected.
+key (Tensor) – The keys to be projected.
+value (Tensor) – The values to be projected.
+Examples::
+>>> import torch
+>>> from torchtext.nn import InProjContainer
+>>> embed_dim, bsz = 10, 64
+>>> in_proj_container = InProjContainer(torch.nn.Linear(embed_dim, embed_dim),
+                                        torch.nn.Linear(embed_dim, embed_dim),
+                                        torch.nn.Linear(embed_dim, embed_dim))
+>>> q = torch.rand((5, bsz, embed_dim))
+>>> k = v = torch.rand((6, bsz, embed_dim))
+>>> q, k, v = in_proj_container(q, k, v)
+
+
+
+>>> import torch
+>>> from torchtext.nn import InProjContainer
+>>> embed_dim, bsz = 10, 64
+>>> in_proj_container = InProjContainer(torch.nn.Linear(embed_dim, embed_dim),
+                                        torch.nn.Linear(embed_dim, embed_dim),
+                                        torch.nn.Linear(embed_dim, embed_dim))
+>>> q = torch.rand((5, bsz, embed_dim))
+>>> k = v = torch.rand((6, bsz, embed_dim))
+>>> q, k, v = in_proj_container(q, k, v)
+
+ScaledDotProduct¶
+
+class torchtext.nn.ScaledDotProduct(dropout=0.0, batch_first=False)[source]¶
+
+
+__init__(dropout=0.0, batch_first=False) → None[source]¶
+Processes a projected query and key-value pair to apply
+scaled dot product attention.
+
+Parameters:
+
+dropout (float) – probability of dropping an attention weight.
+batch_first – If True, then the input and output tensors are provided
+as (batch, seq, feature). Default: False
+
+
+
+
+Examples::>>> import torch, torchtext
+>>> SDP = torchtext.nn.ScaledDotProduct(dropout=0.1)
+>>> q = torch.randn(21, 256, 3)
+>>> k = v = torch.randn(21, 256, 3)
+>>> attn_output, attn_weights = SDP(q, k, v)
+>>> print(attn_output.shape, attn_weights.shape)
+torch.Size([21, 256, 3]) torch.Size([256, 21, 21])
+
+
+
+
+
+
+
+forward(query: Tensor, key: Tensor, value: Tensor, attn_mask: Optional[Tensor] = None, bias_k: Optional[Tensor] = None, bias_v: Optional[Tensor] = None) → Tuple[Tensor, Tensor][source]¶
+Uses a scaled dot product with the projected key-value pair to update
+the projected query.
+
+Parameters:
+
+query (Tensor) – Projected query
+key (Tensor) – Projected key
+value (Tensor) – Projected value
+attn_mask (BoolTensor, optional) – 3D mask that prevents attention to certain positions.
+attn_mask – 3D mask that prevents attention to certain positions.
+bias_k (Tensor, optional) – one more key and value sequence to be added to keys at
+sequence dim (dim=-3). Those are used for incremental decoding. Users should provide
+bias_v.
+bias_v (Tensor, optional) – one more key and value sequence to be added to values at
+sequence dim (dim=-3). Those are used for incremental decoding. Users should also provide
+bias_k.
+
+
+
+
+Shape:
+query: \((..., L, N * H, E / H)\)
+key: \((..., S, N * H, E / H)\)
+value: \((..., S, N * H, E / H)\)
+
+attn_mask: \((N * H, L, S)\), positions with True are not allowed to attendwhile False values will be unchanged.
+
+
+
+bias_k and bias_v:bias: \((1, N * H, E / H)\)
+Output: \((..., L, N * H, E / H)\), \((N * H, L, S)\)
+
+
+Note: It’s optional to have the query/key/value inputs with more than three dimensions (for broadcast purpose).The ScaledDotProduct module will operate on the last three dimensions.
+
+
+where L is the target length, S is the source length, H is the number
+of attention heads, N is the batch size, and E is the embedding dimension.
+
+
+
+
+
+__init__(dropout=0.0, batch_first=False) → None[source]¶
+Processes a projected query and key-value pair to apply
+scaled dot product attention.
+
+Parameters:
+
+dropout (float) – probability of dropping an attention weight.
+batch_first – If True, then the input and output tensors are provided
+as (batch, seq, feature). Default: False
+
+
+
+
+Examples::>>> import torch, torchtext
+>>> SDP = torchtext.nn.ScaledDotProduct(dropout=0.1)
+>>> q = torch.randn(21, 256, 3)
+>>> k = v = torch.randn(21, 256, 3)
+>>> attn_output, attn_weights = SDP(q, k, v)
+>>> print(attn_output.shape, attn_weights.shape)
+torch.Size([21, 256, 3]) torch.Size([256, 21, 21])
+
+
+
+
+
+Processes a projected query and key-value pair to apply
+scaled dot product attention.
+Parameters:
+
+dropout (float) – probability of dropping an attention weight.
+batch_first – If True, then the input and output tensors are provided
+as (batch, seq, feature). Default: False
+
+
+dropout (float) – probability of dropping an attention weight.
+batch_first – If True, then the input and output tensors are provided
+as (batch, seq, feature). Default: False
+Examples::
+>>> import torch, torchtext
+>>> SDP = torchtext.nn.ScaledDotProduct(dropout=0.1)
+>>> q = torch.randn(21, 256, 3)
+>>> k = v = torch.randn(21, 256, 3)
+>>> attn_output, attn_weights = SDP(q, k, v)
+>>> print(attn_output.shape, attn_weights.shape)
+torch.Size([21, 256, 3]) torch.Size([256, 21, 21])
+
+
+
+>>> import torch, torchtext
+>>> SDP = torchtext.nn.ScaledDotProduct(dropout=0.1)
+>>> q = torch.randn(21, 256, 3)
+>>> k = v = torch.randn(21, 256, 3)
+>>> attn_output, attn_weights = SDP(q, k, v)
+>>> print(attn_output.shape, attn_weights.shape)
+torch.Size([21, 256, 3]) torch.Size([256, 21, 21])
+
+
+forward(query: Tensor, key: Tensor, value: Tensor, attn_mask: Optional[Tensor] = None, bias_k: Optional[Tensor] = None, bias_v: Optional[Tensor] = None) → Tuple[Tensor, Tensor][source]¶
+Uses a scaled dot product with the projected key-value pair to update
+the projected query.
+
+Parameters:
+
+query (Tensor) – Projected query
+key (Tensor) – Projected key
+value (Tensor) – Projected value
+attn_mask (BoolTensor, optional) – 3D mask that prevents attention to certain positions.
+attn_mask – 3D mask that prevents attention to certain positions.
+bias_k (Tensor, optional) – one more key and value sequence to be added to keys at
+sequence dim (dim=-3). Those are used for incremental decoding. Users should provide
+bias_v.
+bias_v (Tensor, optional) – one more key and value sequence to be added to values at
+sequence dim (dim=-3). Those are used for incremental decoding. Users should also provide
+bias_k.
+
+
+
+
+Shape:
+query: \((..., L, N * H, E / H)\)
+key: \((..., S, N * H, E / H)\)
+value: \((..., S, N * H, E / H)\)
+
+attn_mask: \((N * H, L, S)\), positions with True are not allowed to attendwhile False values will be unchanged.
+
+
+
+bias_k and bias_v:bias: \((1, N * H, E / H)\)
+Output: \((..., L, N * H, E / H)\), \((N * H, L, S)\)
+
+
+Note: It’s optional to have the query/key/value inputs with more than three dimensions (for broadcast purpose).The ScaledDotProduct module will operate on the last three dimensions.
+
+
+where L is the target length, S is the source length, H is the number
+of attention heads, N is the batch size, and E is the embedding dimension.
+
+
+
+Uses a scaled dot product with the projected key-value pair to update
+the projected query.
+Parameters:
+
+query (Tensor) – Projected query
+key (Tensor) – Projected key
+value (Tensor) – Projected value
+attn_mask (BoolTensor, optional) – 3D mask that prevents attention to certain positions.
+attn_mask – 3D mask that prevents attention to certain positions.
+bias_k (Tensor, optional) – one more key and value sequence to be added to keys at
+sequence dim (dim=-3). Those are used for incremental decoding. Users should provide
+bias_v.
+bias_v (Tensor, optional) – one more key and value sequence to be added to values at
+sequence dim (dim=-3). Those are used for incremental decoding. Users should also provide
+bias_k.
+
+
+query (Tensor) – Projected query
+key (Tensor) – Projected key
+value (Tensor) – Projected value
+attn_mask (BoolTensor, optional) – 3D mask that prevents attention to certain positions.
+attn_mask – 3D mask that prevents attention to certain positions.
+bias_k (Tensor, optional) – one more key and value sequence to be added to keys at
+sequence dim (dim=-3). Those are used for incremental decoding. Users should provide
+bias_v.
+bias_v (Tensor, optional) – one more key and value sequence to be added to values at
+sequence dim (dim=-3). Those are used for incremental decoding. Users should also provide
+bias_k.
+Shape:
+
+query: \((..., L, N * H, E / H)\)
+key: \((..., S, N * H, E / H)\)
+value: \((..., S, N * H, E / H)\)
+
+attn_mask: \((N * H, L, S)\), positions with True are not allowed to attendwhile False values will be unchanged.
+
+
+
+bias_k and bias_v:bias: \((1, N * H, E / H)\)
+Output: \((..., L, N * H, E / H)\), \((N * H, L, S)\)
+
+
+Note: It’s optional to have the query/key/value inputs with more than three dimensions (for broadcast purpose).The ScaledDotProduct module will operate on the last three dimensions.
+
+
+where L is the target length, S is the source length, H is the number
+of attention heads, N is the batch size, and E is the embedding dimension.
+
+query: \((..., L, N * H, E / H)\)
+key: \((..., S, N * H, E / H)\)
+value: \((..., S, N * H, E / H)\)
+attn_mask: \((N * H, L, S)\), positions with True are not allowed to attend
+while False values will be unchanged.
+
+while False values will be unchanged.
+bias_k and bias_v:bias: \((1, N * H, E / H)\)
+Output: \((..., L, N * H, E / H)\), \((N * H, L, S)\)
+Note: It’s optional to have the query/key/value inputs with more than three dimensions (for broadcast purpose).
+The ScaledDotProduct module will operate on the last three dimensions.
+
+The ScaledDotProduct module will operate on the last three dimensions.
+where L is the target length, S is the source length, H is the number
+of attention heads, N is the batch size, and E is the embedding dimension. 
+
+source: https://pytorch.org/text/stable/data_functional.html 
+content: 
+
+torchtext.data.functional¶
+generate_sp_model¶
+
+torchtext.data.functional.generate_sp_model(filename, vocab_size=20000, model_type='unigram', model_prefix='m_user')[source]¶
+Train a SentencePiece tokenizer.
+
+Parameters:
+
+filename – the data file for training SentencePiece model.
+vocab_size – the size of vocabulary (Default: 20,000).
+model_type – the type of SentencePiece model, including unigram,
+bpe, char, word.
+model_prefix – the prefix of the files saving model and vocab.
+
+
+
+
+Outputs:
+The model and vocab are saved in two separate files withmodel_prefix.
+
+
+
+
+Examples
+>>> from torchtext.data.functional import generate_sp_model
+>>> generate_sp_model('test.csv', vocab_size=23456, model_prefix='spm_user')
+
+
+
+Train a SentencePiece tokenizer.
+Parameters:
+
+filename – the data file for training SentencePiece model.
+vocab_size – the size of vocabulary (Default: 20,000).
+model_type – the type of SentencePiece model, including unigram,
+bpe, char, word.
+model_prefix – the prefix of the files saving model and vocab.
+
+
+filename – the data file for training SentencePiece model.
+vocab_size – the size of vocabulary (Default: 20,000).
+model_type – the type of SentencePiece model, including unigram,
+bpe, char, word.
+model_prefix – the prefix of the files saving model and vocab.
+Outputs:
+
+The model and vocab are saved in two separate files withmodel_prefix.
+
+
+
+The model and vocab are saved in two separate files with
+model_prefix.
+
+model_prefix.
+Examples
+>>> from torchtext.data.functional import generate_sp_model
+>>> generate_sp_model('test.csv', vocab_size=23456, model_prefix='spm_user')
+
+load_sp_model¶
+
+torchtext.data.functional.load_sp_model(spm)[source]¶
+Load a  sentencepiece model for file.
+
+Parameters:
+spm – the file path or a file object saving the sentencepiece model.
+
+
+
+Outputs:output: a SentencePiece model.
+
+
+Examples
+>>> from torchtext.data.functional import load_sp_model
+>>> sp_model = load_sp_model("m_user.model")
+>>> sp_model = load_sp_model(open("m_user.model", 'rb'))
+
+
+
+Load a  sentencepiece model for file.
+Parameters:
+spm – the file path or a file object saving the sentencepiece model.
+
+spm – the file path or a file object saving the sentencepiece model.
+Outputs:
+output: a SentencePiece model.
+
+output: a SentencePiece model.
+Examples
+>>> from torchtext.data.functional import load_sp_model
+>>> sp_model = load_sp_model("m_user.model")
+>>> sp_model = load_sp_model(open("m_user.model", 'rb'))
+
+sentencepiece_numericalizer¶
+
+torchtext.data.functional.sentencepiece_numericalizer(sp_model)[source]¶
+
+A sentencepiece model to numericalize a text sentence intoa generator over the ids.
+
+
+
+Parameters:
+sp_model – a SentencePiece model.
+
+
+
+Outputs:
+output: a generator with the input of text sentence and the output of thecorresponding ids based on SentencePiece model.
+
+
+
+
+Examples
+>>> from torchtext.data.functional import sentencepiece_numericalizer
+>>> sp_id_generator = sentencepiece_numericalizer(sp_model)
+>>> list_a = ["sentencepiece encode as pieces", "examples to   try!"]
+>>> list(sp_id_generator(list_a))
+    [[9858, 9249, 1629, 1305, 1809, 53, 842],
+     [2347, 13, 9, 150, 37]]
+
+
+
+A sentencepiece model to numericalize a text sentence into
+a generator over the ids.
+
+a generator over the ids.
+Parameters:
+sp_model – a SentencePiece model.
+
+sp_model – a SentencePiece model.
+Outputs:
+
+output: a generator with the input of text sentence and the output of thecorresponding ids based on SentencePiece model.
+
+
+
+output: a generator with the input of text sentence and the output of the
+corresponding ids based on SentencePiece model.
+
+corresponding ids based on SentencePiece model.
+Examples
+>>> from torchtext.data.functional import sentencepiece_numericalizer
+>>> sp_id_generator = sentencepiece_numericalizer(sp_model)
+>>> list_a = ["sentencepiece encode as pieces", "examples to   try!"]
+>>> list(sp_id_generator(list_a))
+    [[9858, 9249, 1629, 1305, 1809, 53, 842],
+     [2347, 13, 9, 150, 37]]
+
+sentencepiece_tokenizer¶
+
+torchtext.data.functional.sentencepiece_tokenizer(sp_model)[source]¶
+
+A sentencepiece model to tokenize a text sentence intoa generator over the tokens.
+
+
+
+Parameters:
+sp_model – a SentencePiece model.
+
+
+
+Outputs:
+output: a generator with the input of text sentence and the output of thecorresponding tokens based on SentencePiece model.
+
+
+
+
+Examples
+>>> from torchtext.data.functional import sentencepiece_tokenizer
+>>> sp_tokens_generator = sentencepiece_tokenizer(sp_model)
+>>> list_a = ["sentencepiece encode as pieces", "examples to   try!"]
+>>> list(sp_tokens_generator(list_a))
+    [['_sentence', 'piece', '_en', 'co', 'de', '_as', '_pieces'],
+     ['_example', 's', '_to', '_try', '!']]
+
+
+
+A sentencepiece model to tokenize a text sentence into
+a generator over the tokens.
+
+a generator over the tokens.
+Parameters:
+sp_model – a SentencePiece model.
+
+sp_model – a SentencePiece model.
+Outputs:
+
+output: a generator with the input of text sentence and the output of thecorresponding tokens based on SentencePiece model.
+
+
+
+output: a generator with the input of text sentence and the output of the
+corresponding tokens based on SentencePiece model.
+
+corresponding tokens based on SentencePiece model.
+Examples
+>>> from torchtext.data.functional import sentencepiece_tokenizer
+>>> sp_tokens_generator = sentencepiece_tokenizer(sp_model)
+>>> list_a = ["sentencepiece encode as pieces", "examples to   try!"]
+>>> list(sp_tokens_generator(list_a))
+    [['_sentence', 'piece', '_en', 'co', 'de', '_as', '_pieces'],
+     ['_example', 's', '_to', '_try', '!']]
+
+custom_replace¶
+
+torchtext.data.functional.custom_replace(replace_pattern)[source]¶
+A transform to convert text string.
+Examples
+>>> from torchtext.data.functional import custom_replace
+>>> custom_replace_transform = custom_replace([(r'S', 's'), (r'\s+', ' ')])
+>>> list_a = ["Sentencepiece encode  aS  pieces", "exampleS to   try!"]
+>>> list(custom_replace_transform(list_a))
+    ['sentencepiece encode as pieces', 'examples to try!']
+
+
+
+A transform to convert text string.
+Examples
+>>> from torchtext.data.functional import custom_replace
+>>> custom_replace_transform = custom_replace([(r'S', 's'), (r'\s+', ' ')])
+>>> list_a = ["Sentencepiece encode  aS  pieces", "exampleS to   try!"]
+>>> list(custom_replace_transform(list_a))
+    ['sentencepiece encode as pieces', 'examples to try!']
+
+simple_space_split¶
+
+torchtext.data.functional.simple_space_split(iterator)[source]¶
+A transform to split text string by spaces.
+Examples
+>>> from torchtext.data.functional import simple_space_split
+>>> list_a = ["Sentencepiece encode as pieces", "example to try!"]
+>>> list(simple_space_split(list_a))
+    [['Sentencepiece', 'encode', 'as', 'pieces'], ['example', 'to', 'try!']]
+
+
+
+A transform to split text string by spaces.
+Examples
+>>> from torchtext.data.functional import simple_space_split
+>>> list_a = ["Sentencepiece encode as pieces", "example to try!"]
+>>> list(simple_space_split(list_a))
+    [['Sentencepiece', 'encode', 'as', 'pieces'], ['example', 'to', 'try!']]
+
+numericalize_tokens_from_iterator¶
+
+torchtext.data.functional.numericalize_tokens_from_iterator(vocab, iterator, removed_tokens=None)[source]¶
+Yield a list of ids from an token iterator with a vocab.
+
+Parameters:
+
+vocab – the vocabulary convert token into id.
+iterator – the iterator yield a list of tokens.
+removed_tokens – removed tokens from output dataset (Default: None)
+
+
+
+Examples
+>>> from torchtext.data.functional import simple_space_split
+>>> from torchtext.data.functional import numericalize_tokens_from_iterator
+>>> vocab = {'Sentencepiece' : 0, 'encode' : 1, 'as' : 2, 'pieces' : 3}
+>>> ids_iter = numericalize_tokens_from_iterator(vocab,
+>>>                               simple_space_split(["Sentencepiece as pieces",
+>>>                                                   "as pieces"]))
+>>> for ids in ids_iter:
+>>>     print([num for num in ids])
+>>> [0, 2, 3]
+>>> [2, 3]
+
+
+
+Yield a list of ids from an token iterator with a vocab.
+Parameters:
+
+vocab – the vocabulary convert token into id.
+iterator – the iterator yield a list of tokens.
+removed_tokens – removed tokens from output dataset (Default: None)
+
+
+vocab – the vocabulary convert token into id.
+iterator – the iterator yield a list of tokens.
+removed_tokens – removed tokens from output dataset (Default: None)
+Examples
+>>> from torchtext.data.functional import simple_space_split
+>>> from torchtext.data.functional import numericalize_tokens_from_iterator
+>>> vocab = {'Sentencepiece' : 0, 'encode' : 1, 'as' : 2, 'pieces' : 3}
+>>> ids_iter = numericalize_tokens_from_iterator(vocab,
+>>>                               simple_space_split(["Sentencepiece as pieces",
+>>>                                                   "as pieces"]))
+>>> for ids in ids_iter:
+>>>     print([num for num in ids])
+>>> [0, 2, 3]
+>>> [2, 3]
+
+filter_wikipedia_xml¶
+
+torchtext.data.functional.filter_wikipedia_xml(text_iterator)[source]¶
+Filter wikipedia xml lines according to https://github.com/facebookresearch/fastText/blob/master/wikifil.pl
+
+Parameters:
+text_iterator – An iterator type object that yields strings. Examples include string list, text io, generators etc.
+
+
+Examples
+>>> from torchtext.data.functional import filter_wikipedia_xml
+>>> from torchtext.datasets import EnWik9
+>>> data_iter = EnWik9(split='train')
+>>> filter_data_iter = filter_wikipedia_xml(data_iter)
+>>> file_name = '.data/EnWik9/enwik9'
+>>> filter_data_iter = filter_wikipedia_xml(open(file_name,'r'))
+
+
+
+Filter wikipedia xml lines according to https://github.com/facebookresearch/fastText/blob/master/wikifil.pl
+Parameters:
+text_iterator – An iterator type object that yields strings. Examples include string list, text io, generators etc.
+
+text_iterator – An iterator type object that yields strings. Examples include string list, text io, generators etc.
+Examples
+>>> from torchtext.data.functional import filter_wikipedia_xml
+>>> from torchtext.datasets import EnWik9
+>>> data_iter = EnWik9(split='train')
+>>> filter_data_iter = filter_wikipedia_xml(data_iter)
+>>> file_name = '.data/EnWik9/enwik9'
+>>> filter_data_iter = filter_wikipedia_xml(open(file_name,'r'))
+
+to_map_style_dataset¶
+
+torchtext.data.functional.to_map_style_dataset(iter_data)[source]¶
+Convert iterable-style dataset to map-style dataset.
+
+Parameters:
+iter_data – An iterator type object. Examples include Iterable datasets, string list, text io, generators etc.
+
+
+Examples
+>>> from torchtext.datasets import IMDB
+>>> from torchtext.data import to_map_style_dataset
+>>> train_iter = IMDB(split='train')
+>>> train_dataset = to_map_style_dataset(train_iter)
+>>> file_name = '.data/EnWik9/enwik9'
+>>> data_iter = to_map_style_dataset(open(file_name,'r'))
+
+
+
+Convert iterable-style dataset to map-style dataset.
+Parameters:
+iter_data – An iterator type object. Examples include Iterable datasets, string list, text io, generators etc.
+
+iter_data – An iterator type object. Examples include Iterable datasets, string list, text io, generators etc.
+Examples
+>>> from torchtext.datasets import IMDB
+>>> from torchtext.data import to_map_style_dataset
+>>> train_iter = IMDB(split='train')
+>>> train_dataset = to_map_style_dataset(train_iter)
+>>> file_name = '.data/EnWik9/enwik9'
+>>> data_iter = to_map_style_dataset(open(file_name,'r'))
+ 
+
+source: https://pytorch.org/text/stable/data_metrics.html 
+content: 
+
+torchtext.data.metrics¶
+bleu_score¶
+
+torchtext.data.metrics.bleu_score(candidate_corpus, references_corpus, max_n=4, weights=[0.25, 0.25, 0.25, 0.25])[source]¶
+Computes the BLEU score between a candidate translation corpus and a references
+translation corpus. Based on https://www.aclweb.org/anthology/P02-1040.pdf
+
+Parameters:
+
+candidate_corpus – an iterable of candidate translations. Each translation is an
+iterable of tokens
+references_corpus – an iterable of iterables of reference translations. Each
+translation is an iterable of tokens
+max_n – the maximum n-gram we want to use. E.g. if max_n=3, we will use unigrams,
+bigrams and trigrams
+weights – a list of weights used for each n-gram category (uniform by default)
+
+
+
+Examples
+>>> from torchtext.data.metrics import bleu_score
+>>> candidate_corpus = [['My', 'full', 'pytorch', 'test'], ['Another', 'Sentence']]
+>>> references_corpus = [[['My', 'full', 'pytorch', 'test'], ['Completely', 'Different']], [['No', 'Match']]]
+>>> bleu_score(candidate_corpus, references_corpus)
+    0.8408964276313782
+
+
+
+Computes the BLEU score between a candidate translation corpus and a references
+translation corpus. Based on https://www.aclweb.org/anthology/P02-1040.pdf
+Parameters:
+
+candidate_corpus – an iterable of candidate translations. Each translation is an
+iterable of tokens
+references_corpus – an iterable of iterables of reference translations. Each
+translation is an iterable of tokens
+max_n – the maximum n-gram we want to use. E.g. if max_n=3, we will use unigrams,
+bigrams and trigrams
+weights – a list of weights used for each n-gram category (uniform by default)
+
+
+candidate_corpus – an iterable of candidate translations. Each translation is an
+iterable of tokens
+references_corpus – an iterable of iterables of reference translations. Each
+translation is an iterable of tokens
+max_n – the maximum n-gram we want to use. E.g. if max_n=3, we will use unigrams,
+bigrams and trigrams
+weights – a list of weights used for each n-gram category (uniform by default)
+Examples
+>>> from torchtext.data.metrics import bleu_score
+>>> candidate_corpus = [['My', 'full', 'pytorch', 'test'], ['Another', 'Sentence']]
+>>> references_corpus = [[['My', 'full', 'pytorch', 'test'], ['Completely', 'Different']], [['No', 'Match']]]
+>>> bleu_score(candidate_corpus, references_corpus)
+    0.8408964276313782
+ 
+
+source: https://pytorch.org/text/stable/data_utils.html 
+content: 
+
+torchtext.data.utils¶
+get_tokenizer¶
+
+torchtext.data.utils.get_tokenizer(tokenizer, language='en')[source]¶
+Generate tokenizer function for a string sentence.
+
+Parameters:
+
+tokenizer – the name of tokenizer function. If None, it returns split()
+function, which splits the string sentence by space.
+If basic_english, it returns _basic_english_normalize() function,
+which normalize the string first and split by space. If a callable
+function, it will return the function. If a tokenizer library
+(e.g. spacy, moses, toktok, revtok, subword), it returns the
+corresponding library.
+language – Default en
+
+
+
+Examples
+>>> import torchtext
+>>> from torchtext.data import get_tokenizer
+>>> tokenizer = get_tokenizer("basic_english")
+>>> tokens = tokenizer("You can now install TorchText using pip!")
+>>> tokens
+>>> ['you', 'can', 'now', 'install', 'torchtext', 'using', 'pip', '!']
+
+
+
+Generate tokenizer function for a string sentence.
+Parameters:
+
+tokenizer – the name of tokenizer function. If None, it returns split()
+function, which splits the string sentence by space.
+If basic_english, it returns _basic_english_normalize() function,
+which normalize the string first and split by space. If a callable
+function, it will return the function. If a tokenizer library
+(e.g. spacy, moses, toktok, revtok, subword), it returns the
+corresponding library.
+language – Default en
+
+
+tokenizer – the name of tokenizer function. If None, it returns split()
+function, which splits the string sentence by space.
+If basic_english, it returns _basic_english_normalize() function,
+which normalize the string first and split by space. If a callable
+function, it will return the function. If a tokenizer library
+(e.g. spacy, moses, toktok, revtok, subword), it returns the
+corresponding library.
+language – Default en
+Examples
+>>> import torchtext
+>>> from torchtext.data import get_tokenizer
+>>> tokenizer = get_tokenizer("basic_english")
+>>> tokens = tokenizer("You can now install TorchText using pip!")
+>>> tokens
+>>> ['you', 'can', 'now', 'install', 'torchtext', 'using', 'pip', '!']
+
+ngrams_iterator¶
+
+torchtext.data.utils.ngrams_iterator(token_list, ngrams)[source]¶
+Return an iterator that yields the given tokens and their ngrams.
+
+Parameters:
+
+token_list – A list of tokens
+ngrams – the number of ngrams.
+
+
+
+Examples
+>>> token_list = ['here', 'we', 'are']
+>>> list(ngrams_iterator(token_list, 2))
+>>> ['here', 'here we', 'we', 'we are', 'are']
+
+
+
+Return an iterator that yields the given tokens and their ngrams.
+Parameters:
+
+token_list – A list of tokens
+ngrams – the number of ngrams.
+
+
+token_list – A list of tokens
+ngrams – the number of ngrams.
+Examples
+>>> token_list = ['here', 'we', 'are']
+>>> list(ngrams_iterator(token_list, 2))
+>>> ['here', 'here we', 'we', 'we are', 'are']
+ 
+
+source: https://pytorch.org/text/stable/datasets.html 
+content: 
+
+torchtext.datasets¶
+Warning
+The datasets supported by torchtext are datapipes from the torchdata
+project, which is still in Beta
+status. This means that the API is subject to change without deprecation
+cycles. In particular, we expect a lot of the current idioms to change with
+the eventual release of DataLoaderV2 from torchdata.
+Here are a few recommendations regarding the use of datapipes:
+For shuffling the datapipe, do that in the DataLoader: DataLoader(dp, shuffle=True).
+You do not need to call dp.shuffle(), because torchtext has
+already done that for you. Note however that the datapipe won’t be
+shuffled unless you explicitly pass shuffle=True to the DataLoader.
+When using multi-processing (num_workers=N), use the builtin worker_init_fn:
+from torch.utils.data.backward_compatibility import worker_init_fn
+DataLoader(dp, num_workers=4, worker_init_fn=worker_init_fn, drop_last=True)
+
+This will ensure that data isn’t duplicated across workers.
+We also recommend using drop_last=True. Without this, the batch sizes
+at the end of an epoch may be very small in some cases (smaller than with
+other map-style datasets). This might affect accuracy greatly especially
+when batch-norm is used. drop_last=True ensures that all batch sizes
+are equal.
+Distributed training with DistributedDataParallel is not yet entirely
+stable / supported, and we don’t recommend it at this point. It will be
+better supported in DataLoaderV2. If you still wish to use DDP, make sure
+that:
+All workers (DDP workers and DataLoader workers) see a different part
+of the data. The datasets are already wrapped inside  ShardingFilter
+and you may need to call dp.apply_sharding(num_shards, shard_id) in order to shard the
+data across ranks (DDP workers) and DataLoader workers. One way to do this
+is to create worker_init_fn that calls apply_sharding with appropriate
+number of shards (DDP workers * DataLoader workers) and shard id (inferred through rank
+and worker ID of corresponding DataLoader withing rank). Note however, that this assumes
+equal number of DataLoader workers for all the ranks.
+All DDP workers work on the same number of batches. One way to do this
+is to by limit the size of the datapipe within each worker to
+len(datapipe) // num_ddp_workers, but this might not suit all
+use-cases.
+The shuffling seed is the same across all workers. You might need to
+call torch.utils.data.graph_settings.apply_shuffle_seed(dp, rng)
+The shuffling seed is different across epochs.
+The rest of the RNG (typically used for transformations) is
+different across workers, for maximal entropy and optimal accuracy.
+General use cases are as follows:
+# import datasets
+from torchtext.datasets import IMDB
+
+train_iter = IMDB(split='train')
+
+def tokenize(label, line):
+    return line.split()
+
+tokens = []
+for label, line in train_iter:
+    tokens += tokenize(label, line)
+
+The following datasets are currently available. If you would like to contribute
+new datasets to the repo or work with your own custom datasets, please refer to CONTRIBUTING_DATASETS.md guide.
+Datasets
+Text Classification
+AG_NEWS
+AmazonReviewFull
+AmazonReviewPolarity
+CoLA
+DBpedia
+IMDb
+MNLI
+MRPC
+QNLI
+QQP
+RTE
+SogouNews
+SST2
+STSB
+WNLI
+YahooAnswers
+YelpReviewFull
+YelpReviewPolarity
+Language Modeling
+PennTreebank
+WikiText-2
+WikiText103
+Machine Translation
+IWSLT2016
+IWSLT2017
+Multi30k
+Sequence Tagging
+CoNLL2000Chunking
+UDPOS
+Question Answer
+SQuAD 1.0
+SQuAD 2.0
+Unsupervised Learning
+CC100
+EnWik9
+Text Classification¶
+AG_NEWS¶
+
+torchtext.datasets.AG_NEWS(root: str = '.data', split: Union[Tuple[str], str] = ('train', 'test'))[source]¶
+AG_NEWS Dataset
+
+Warning
+Using datapipes is still currently subject to a few caveats. If you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+
+For additional details refer to https://paperswithcode.com/dataset/ag-news
+
+Number of lines per split:
+train: 120000
+test: 7600
+
+
+
+
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+
+
+Returns:
+DataPipe that yields tuple of label (1 to 4) and text
+
+Return type:
+(int, str)
+
+
+
+AG_NEWS Dataset
+Warning
+Using datapipes is still currently subject to a few caveats. If you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+For additional details refer to https://paperswithcode.com/dataset/ag-news
+Number of lines per split:
+
+train: 120000
+test: 7600
+
+
+train: 120000
+test: 7600
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+Returns:
+DataPipe that yields tuple of label (1 to 4) and text
+
+DataPipe that yields tuple of label (1 to 4) and text
+Return type:
+(int, str)
+
+(int, str)
+AmazonReviewFull¶
+
+torchtext.datasets.AmazonReviewFull(root: str = '.data', split: Union[Tuple[str], str] = ('train', 'test'))[source]¶
+AmazonReviewFull Dataset
+
+Warning
+Using datapipes is still currently subject to a few caveats. If you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+
+For additional details refer to https://arxiv.org/abs/1509.01626
+
+Number of lines per split:
+train: 3000000
+test: 650000
+
+
+
+
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+
+
+Returns:
+DataPipe that yields tuple of label (1 to 5) and text containing the review title and text
+
+Return type:
+(int, str)
+
+
+
+AmazonReviewFull Dataset
+Warning
+Using datapipes is still currently subject to a few caveats. If you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+For additional details refer to https://arxiv.org/abs/1509.01626
+Number of lines per split:
+
+train: 3000000
+test: 650000
+
+
+train: 3000000
+test: 650000
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+Returns:
+DataPipe that yields tuple of label (1 to 5) and text containing the review title and text
+
+DataPipe that yields tuple of label (1 to 5) and text containing the review title and text
+Return type:
+(int, str)
+
+(int, str)
+AmazonReviewPolarity¶
+
+torchtext.datasets.AmazonReviewPolarity(root: str = '.data', split: Union[Tuple[str], str] = ('train', 'test'))[source]¶
+AmazonReviewPolarity Dataset
+
+Warning
+Using datapipes is still currently subject to a few caveats. If you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+
+For additional details refer to https://arxiv.org/abs/1509.01626
+
+Number of lines per split:
+train: 3600000
+test: 400000
+
+
+
+
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+
+
+Returns:
+DataPipe that yields tuple of label (1 to 2) and text containing the review title and text
+
+Return type:
+(int, str)
+
+
+
+AmazonReviewPolarity Dataset
+Warning
+Using datapipes is still currently subject to a few caveats. If you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+For additional details refer to https://arxiv.org/abs/1509.01626
+Number of lines per split:
+
+train: 3600000
+test: 400000
+
+
+train: 3600000
+test: 400000
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+Returns:
+DataPipe that yields tuple of label (1 to 2) and text containing the review title and text
+
+DataPipe that yields tuple of label (1 to 2) and text containing the review title and text
+Return type:
+(int, str)
+
+(int, str)
+CoLA¶
+
+torchtext.datasets.CoLA(root: str = '.data', split: Union[Tuple[str], str] = ('train', 'dev', 'test'))[source]¶
+CoLA dataset
+
+Warning
+Using datapipes is still currently subject to a few caveats. If you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+
+For additional details refer to https://nyu-mll.github.io/CoLA/
+
+Number of lines per split:
+train: 8551
+dev: 527
+test: 516
+
+
+
+
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, dev, test)
+
+
+Returns:
+DataPipe that yields rows from CoLA dataset (source (str), label (int), sentence (str))
+
+Return type:
+(str, int, str)
+
+
+
+CoLA dataset
+Warning
+Using datapipes is still currently subject to a few caveats. If you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+For additional details refer to https://nyu-mll.github.io/CoLA/
+Number of lines per split:
+
+train: 8551
+dev: 527
+test: 516
+
+
+train: 8551
+dev: 527
+test: 516
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, dev, test)
+
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, dev, test)
+Returns:
+DataPipe that yields rows from CoLA dataset (source (str), label (int), sentence (str))
+
+DataPipe that yields rows from CoLA dataset (source (str), label (int), sentence (str))
+Return type:
+(str, int, str)
+
+(str, int, str)
+DBpedia¶
+
+torchtext.datasets.DBpedia(root: str = '.data', split: Union[Tuple[str], str] = ('train', 'test'))[source]¶
+DBpedia Dataset
+
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+
+For additional details refer to https://www.dbpedia.org/resources/latest-core/
+
+Number of lines per split:
+train: 560000
+test: 70000
+
+
+
+
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+
+
+Returns:
+DataPipe that yields tuple of label (1 to 14) and text containing the news title and contents
+
+Return type:
+(int, str)
+
+
+
+DBpedia Dataset
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+For additional details refer to https://www.dbpedia.org/resources/latest-core/
+Number of lines per split:
+
+train: 560000
+test: 70000
+
+
+train: 560000
+test: 70000
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+Returns:
+DataPipe that yields tuple of label (1 to 14) and text containing the news title and contents
+
+DataPipe that yields tuple of label (1 to 14) and text containing the news title and contents
+Return type:
+(int, str)
+
+(int, str)
+IMDb¶
+
+torchtext.datasets.IMDB(root: str = '.data', split: Union[Tuple[str], str] = ('train', 'test'))[source]¶
+IMDB Dataset
+
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+
+For additional details refer to http://ai.stanford.edu/~amaas/data/sentiment/
+
+Number of lines per split:
+train: 25000
+test: 25000
+
+
+
+
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+
+
+Returns:
+DataPipe that yields tuple of label (1 to 2) and text containing the movie review
+
+Return type:
+(int, str)
+
+
+
+Tutorials using IMDB:
+T5-Base Model for Summarization, Sentiment Classification, and Translation
+T5-Base Model for Summarization, Sentiment Classification, and Translation
+
+
+
+IMDB Dataset
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+For additional details refer to http://ai.stanford.edu/~amaas/data/sentiment/
+Number of lines per split:
+
+train: 25000
+test: 25000
+
+
+train: 25000
+test: 25000
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+Returns:
+DataPipe that yields tuple of label (1 to 2) and text containing the movie review
+
+DataPipe that yields tuple of label (1 to 2) and text containing the movie review
+Return type:
+(int, str)
+
+(int, str)
+Tutorials using IMDB:
+
+T5-Base Model for Summarization, Sentiment Classification, and Translation
+T5-Base Model for Summarization, Sentiment Classification, and Translation
+
+T5-Base Model for Summarization, Sentiment Classification, and Translation
+MNLI¶
+
+torchtext.datasets.MNLI(root='.data', split=('train', 'dev_matched', 'dev_mismatched'))[source]¶
+MNLI Dataset
+
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+
+For additional details refer to https://cims.nyu.edu/~sbowman/multinli/
+
+Number of lines per split:
+train: 392702
+dev_matched: 9815
+dev_mismatched: 9832
+
+
+
+
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, dev_matched, dev_mismatched)
+
+
+Returns:
+DataPipe that yields tuple of text and label (0 to 2).
+
+Return type:
+Tuple[int, str, str]
+
+
+
+MNLI Dataset
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+For additional details refer to https://cims.nyu.edu/~sbowman/multinli/
+Number of lines per split:
+
+train: 392702
+dev_matched: 9815
+dev_mismatched: 9832
+
+
+train: 392702
+dev_matched: 9815
+dev_mismatched: 9832
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, dev_matched, dev_mismatched)
+
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, dev_matched, dev_mismatched)
+Returns:
+DataPipe that yields tuple of text and label (0 to 2).
+
+DataPipe that yields tuple of text and label (0 to 2).
+Return type:
+Tuple[int, str, str]
+
+Tuple[int, str, str]
+MRPC¶
+
+torchtext.datasets.MRPC(root: str = '.data', split: Union[Tuple[str], str] = ('train', 'test'))[source]¶
+MRPC Dataset
+
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+
+For additional details refer to https://www.microsoft.com/en-us/download/details.aspx?id=52398
+
+Number of lines per split:
+train: 4076
+test: 1725
+
+
+
+
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+
+
+Returns:
+DataPipe that yields data points from MRPC dataset which consist of label, sentence1, sentence2
+
+Return type:
+(int, str, str)
+
+
+
+MRPC Dataset
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+For additional details refer to https://www.microsoft.com/en-us/download/details.aspx?id=52398
+Number of lines per split:
+
+train: 4076
+test: 1725
+
+
+train: 4076
+test: 1725
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+Returns:
+DataPipe that yields data points from MRPC dataset which consist of label, sentence1, sentence2
+
+DataPipe that yields data points from MRPC dataset which consist of label, sentence1, sentence2
+Return type:
+(int, str, str)
+
+(int, str, str)
+QNLI¶
+
+torchtext.datasets.QNLI(root='.data', split=('train', 'dev', 'test'))[source]¶
+QNLI Dataset
+For additional details refer to https://arxiv.org/pdf/1804.07461.pdf (from GLUE paper)
+
+Number of lines per split:
+train: 104743
+dev: 5463
+test: 5463
+
+
+
+
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, dev, test)
+
+
+Returns:
+DataPipe that yields tuple of text and label (0 and 1).
+
+Return type:
+(int, str, str)
+
+
+
+QNLI Dataset
+For additional details refer to https://arxiv.org/pdf/1804.07461.pdf (from GLUE paper)
+Number of lines per split:
+
+train: 104743
+dev: 5463
+test: 5463
+
+
+train: 104743
+dev: 5463
+test: 5463
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, dev, test)
+
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, dev, test)
+Returns:
+DataPipe that yields tuple of text and label (0 and 1).
+
+DataPipe that yields tuple of text and label (0 and 1).
+Return type:
+(int, str, str)
+
+(int, str, str)
+QQP¶
+
+torchtext.datasets.QQP(root: str)[source]¶
+QQP dataset
+
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+
+For additional details refer to https://quoradata.quora.com/First-Quora-Dataset-Release-Question-Pairs
+
+Parameters:
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+
+Returns:
+DataPipe that yields rows from QQP dataset (label (int), question1 (str), question2 (str))
+
+Return type:
+(int, str, str)
+
+
+
+QQP dataset
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+For additional details refer to https://quoradata.quora.com/First-Quora-Dataset-Release-Question-Pairs
+Parameters:
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+Returns:
+DataPipe that yields rows from QQP dataset (label (int), question1 (str), question2 (str))
+
+DataPipe that yields rows from QQP dataset (label (int), question1 (str), question2 (str))
+Return type:
+(int, str, str)
+
+(int, str, str)
+RTE¶
+
+torchtext.datasets.RTE(root='.data', split=('train', 'dev', 'test'))[source]¶
+RTE Dataset
+For additional details refer to https://aclweb.org/aclwiki/Recognizing_Textual_Entailment
+
+Number of lines per split:
+train: 2490
+dev: 277
+test: 3000
+
+
+
+
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, dev, test)
+
+
+Returns:
+DataPipe that yields tuple of text and/or label (0 and 1). The test split only returns text.
+
+Return type:
+Union[(int, str, str), (str, str)]
+
+
+
+RTE Dataset
+For additional details refer to https://aclweb.org/aclwiki/Recognizing_Textual_Entailment
+Number of lines per split:
+
+train: 2490
+dev: 277
+test: 3000
+
+
+train: 2490
+dev: 277
+test: 3000
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, dev, test)
+
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, dev, test)
+Returns:
+DataPipe that yields tuple of text and/or label (0 and 1). The test split only returns text.
+
+DataPipe that yields tuple of text and/or label (0 and 1). The test split only returns text.
+Return type:
+Union[(int, str, str), (str, str)]
+
+Union[(int, str, str), (str, str)]
+SogouNews¶
+
+torchtext.datasets.SogouNews(root: str = '.data', split: Union[Tuple[str], str] = ('train', 'test'))[source]¶
+SogouNews Dataset
+
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+
+For additional details refer to https://arxiv.org/abs/1509.01626
+
+
+Number of lines per split:
+train: 450000
+test: 60000
+
+
+Args:root: Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split: split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+
+
+
+returns:
+DataPipe that yields tuple of label (1 to 5) and text containing the news title and contents
+
+rtype:
+(int, str)
+
+
+
+
+SogouNews Dataset
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+For additional details refer to https://arxiv.org/abs/1509.01626
+Number of lines per split:
+
+train: 450000
+test: 60000
+
+
+train: 450000
+test: 60000
+Args:
+root: Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split: split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+
+root: Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split: split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+returns:
+DataPipe that yields tuple of label (1 to 5) and text containing the news title and contents
+
+DataPipe that yields tuple of label (1 to 5) and text containing the news title and contents
+rtype:
+(int, str)
+
+(int, str)
+SST2¶
+
+torchtext.datasets.SST2(root='.data', split=('train', 'dev', 'test'))[source]¶
+SST2 Dataset
+
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+
+For additional details refer to https://nlp.stanford.edu/sentiment/
+
+Number of lines per split:
+train: 67349
+dev: 872
+test: 1821
+
+
+
+
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, dev, test)
+
+
+Returns:
+DataPipe that yields tuple of text and/or label (1 to 4). The test split only returns text.
+
+Return type:
+Union[(int, str), (str,)]
+
+
+
+Tutorials using SST2:
+SST-2 Binary text classification with XLM-RoBERTa model
+SST-2 Binary text classification with XLM-RoBERTa model
+
+
+
+SST2 Dataset
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+For additional details refer to https://nlp.stanford.edu/sentiment/
+Number of lines per split:
+
+train: 67349
+dev: 872
+test: 1821
+
+
+train: 67349
+dev: 872
+test: 1821
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, dev, test)
+
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, dev, test)
+Returns:
+DataPipe that yields tuple of text and/or label (1 to 4). The test split only returns text.
+
+DataPipe that yields tuple of text and/or label (1 to 4). The test split only returns text.
+Return type:
+Union[(int, str), (str,)]
+
+Union[(int, str), (str,)]
+Tutorials using SST2:
+
+SST-2 Binary text classification with XLM-RoBERTa model
+SST-2 Binary text classification with XLM-RoBERTa model
+
+SST-2 Binary text classification with XLM-RoBERTa model
+STSB¶
+
+torchtext.datasets.STSB(root='.data', split=('train', 'dev', 'test'))[source]¶
+STSB Dataset
+
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+
+For additional details refer to https://ixa2.si.ehu.eus/stswiki/index.php/STSbenchmark
+
+Number of lines per split:
+train: 5749
+dev: 1500
+test: 1379
+
+
+
+
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, dev, test)
+
+
+Returns:
+DataPipe that yields tuple of (index (int), label (float), sentence1 (str), sentence2 (str))
+
+Return type:
+(int, float, str, str)
+
+
+
+STSB Dataset
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+For additional details refer to https://ixa2.si.ehu.eus/stswiki/index.php/STSbenchmark
+Number of lines per split:
+
+train: 5749
+dev: 1500
+test: 1379
+
+
+train: 5749
+dev: 1500
+test: 1379
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, dev, test)
+
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, dev, test)
+Returns:
+DataPipe that yields tuple of (index (int), label (float), sentence1 (str), sentence2 (str))
+
+DataPipe that yields tuple of (index (int), label (float), sentence1 (str), sentence2 (str))
+Return type:
+(int, float, str, str)
+
+(int, float, str, str)
+WNLI¶
+
+torchtext.datasets.WNLI(root='.data', split=('train', 'dev', 'test'))[source]¶
+WNLI Dataset
+For additional details refer to https://arxiv.org/pdf/1804.07461v3.pdf
+
+Number of lines per split:
+train: 635
+dev: 71
+test: 146
+
+
+
+
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, dev, test)
+
+
+Returns:
+DataPipe that yields tuple of text and/or label (0 to 1). The test split only returns text.
+
+Return type:
+Union[(int, str, str), (str, str)]
+
+
+
+WNLI Dataset
+For additional details refer to https://arxiv.org/pdf/1804.07461v3.pdf
+Number of lines per split:
+
+train: 635
+dev: 71
+test: 146
+
+
+train: 635
+dev: 71
+test: 146
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, dev, test)
+
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, dev, test)
+Returns:
+DataPipe that yields tuple of text and/or label (0 to 1). The test split only returns text.
+
+DataPipe that yields tuple of text and/or label (0 to 1). The test split only returns text.
+Return type:
+Union[(int, str, str), (str, str)]
+
+Union[(int, str, str), (str, str)]
+YahooAnswers¶
+
+torchtext.datasets.YahooAnswers(root: str = '.data', split: Union[Tuple[str], str] = ('train', 'test'))[source]¶
+YahooAnswers Dataset
+
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+
+For additional details refer to https://arxiv.org/abs/1509.01626
+
+Number of lines per split:
+train: 1400000
+test: 60000
+
+
+
+
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+
+
+Returns:
+DataPipe that yields tuple of label (1 to 10) and text containing the question title, question
+content, and best answer
+
+Return type:
+(int, str)
+
+
+
+YahooAnswers Dataset
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+For additional details refer to https://arxiv.org/abs/1509.01626
+Number of lines per split:
+
+train: 1400000
+test: 60000
+
+
+train: 1400000
+test: 60000
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+Returns:
+DataPipe that yields tuple of label (1 to 10) and text containing the question title, question
+content, and best answer
+
+DataPipe that yields tuple of label (1 to 10) and text containing the question title, question
+content, and best answer
+Return type:
+(int, str)
+
+(int, str)
+YelpReviewFull¶
+
+torchtext.datasets.YelpReviewFull(root: str = '.data', split: Union[Tuple[str], str] = ('train', 'test'))[source]¶
+YelpReviewFull Dataset
+
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+
+For additional details refer to https://arxiv.org/abs/1509.01626
+
+Number of lines per split:
+train: 650000
+test: 50000
+
+
+
+
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+
+
+Returns:
+DataPipe that yields tuple of label (1 to 5) and text containing the review
+
+Return type:
+(int, str)
+
+
+
+YelpReviewFull Dataset
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+For additional details refer to https://arxiv.org/abs/1509.01626
+Number of lines per split:
+
+train: 650000
+test: 50000
+
+
+train: 650000
+test: 50000
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+Returns:
+DataPipe that yields tuple of label (1 to 5) and text containing the review
+
+DataPipe that yields tuple of label (1 to 5) and text containing the review
+Return type:
+(int, str)
+
+(int, str)
+YelpReviewPolarity¶
+
+torchtext.datasets.YelpReviewPolarity(root: str = '.data', split: Union[Tuple[str], str] = ('train', 'test'))[source]¶
+YelpReviewPolarity Dataset
+
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+
+For additional details refer to https://arxiv.org/abs/1509.01626
+
+Number of lines per split:
+train: 560000
+test: 38000
+
+
+
+
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+
+
+Returns:
+DataPipe that yields tuple of label (1 to 2) and text containing the review
+
+Return type:
+(int, str)
+
+
+
+YelpReviewPolarity Dataset
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+For additional details refer to https://arxiv.org/abs/1509.01626
+Number of lines per split:
+
+train: 560000
+test: 38000
+
+
+train: 560000
+test: 38000
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+Returns:
+DataPipe that yields tuple of label (1 to 2) and text containing the review
+
+DataPipe that yields tuple of label (1 to 2) and text containing the review
+Return type:
+(int, str)
+
+(int, str)
+Language Modeling¶
+PennTreebank¶
+
+torchtext.datasets.PennTreebank(root='.data', split: Union[Tuple[str], str] = ('train', 'valid', 'test'))[source]¶
+PennTreebank Dataset
+
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+
+For additional details refer to https://catalog.ldc.upenn.edu/docs/LDC95T7/cl93.html
+
+Number of lines per split:
+train: 42068
+valid: 3370
+test: 3761
+
+
+
+
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, valid, test)
+
+
+Returns:
+DataPipe that yields text from the Treebank corpus
+
+Return type:
+str
+
+
+
+PennTreebank Dataset
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+For additional details refer to https://catalog.ldc.upenn.edu/docs/LDC95T7/cl93.html
+Number of lines per split:
+
+train: 42068
+valid: 3370
+test: 3761
+
+
+train: 42068
+valid: 3370
+test: 3761
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, valid, test)
+
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, valid, test)
+Returns:
+DataPipe that yields text from the Treebank corpus
+
+DataPipe that yields text from the Treebank corpus
+Return type:
+str
+
+str
+WikiText-2¶
+
+torchtext.datasets.WikiText2(root: str = '.data', split: Union[Tuple[str], str] = ('train', 'valid', 'test'))[source]¶
+WikiText2 Dataset
+
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+
+For additional details refer to https://blog.salesforceairesearch.com/the-wikitext-long-term-dependency-language-modeling-dataset/
+
+Number of lines per split:
+train: 36718
+valid: 3760
+test: 4358
+
+
+
+
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, valid, test)
+
+
+Returns:
+DataPipe that yields text from Wikipedia articles
+
+Return type:
+str
+
+
+
+WikiText2 Dataset
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+For additional details refer to https://blog.salesforceairesearch.com/the-wikitext-long-term-dependency-language-modeling-dataset/
+Number of lines per split:
+
+train: 36718
+valid: 3760
+test: 4358
+
+
+train: 36718
+valid: 3760
+test: 4358
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, valid, test)
+
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, valid, test)
+Returns:
+DataPipe that yields text from Wikipedia articles
+
+DataPipe that yields text from Wikipedia articles
+Return type:
+str
+
+str
+WikiText103¶
+
+torchtext.datasets.WikiText103(root: str = '.data', split: Union[Tuple[str], str] = ('train', 'valid', 'test'))[source]¶
+WikiText103 Dataset
+
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+
+For additional details refer to https://blog.salesforceairesearch.com/the-wikitext-long-term-dependency-language-modeling-dataset/
+
+Number of lines per split:
+train: 1801350
+valid: 3760
+test: 4358
+
+
+
+
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, valid, test)
+
+
+Returns:
+DataPipe that yields text from Wikipedia articles
+
+Return type:
+str
+
+
+
+WikiText103 Dataset
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+For additional details refer to https://blog.salesforceairesearch.com/the-wikitext-long-term-dependency-language-modeling-dataset/
+Number of lines per split:
+
+train: 1801350
+valid: 3760
+test: 4358
+
+
+train: 1801350
+valid: 3760
+test: 4358
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, valid, test)
+
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, valid, test)
+Returns:
+DataPipe that yields text from Wikipedia articles
+
+DataPipe that yields text from Wikipedia articles
+Return type:
+str
+
+str
+Machine Translation¶
+IWSLT2016¶
+
+torchtext.datasets.IWSLT2016(root='.data', split=('train', 'valid', 'test'), language_pair=('de', 'en'), valid_set='tst2013', test_set='tst2014')[source]¶
+IWSLT2016 dataset
+
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+
+For additional details refer to https://wit3.fbk.eu/2016-01
+The available datasets include following:
+Language pairs:
+
+
+
+“en”
+“fr”
+“de”
+“cs”
+“ar”
+
+“en”
+
+x
+x
+x
+x
+
+“fr”
+x
+
+
+
+
+
+“de”
+x
+
+
+
+
+
+“cs”
+x
+
+
+
+
+
+“ar”
+x
+
+
+
+
+
+
+
+valid/test sets: [“dev2010”, “tst2010”, “tst2011”, “tst2012”, “tst2013”, “tst2014”]
+
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (‘train’, ‘valid’, ‘test’)
+language_pair – tuple or list containing src and tgt language
+valid_set – a string to identify validation set.
+test_set – a string to identify test set.
+
+
+Returns:
+DataPipe that yields tuple of source and target sentences
+
+Return type:
+(str, str)
+
+
+Examples
+>>> from torchtext.datasets import IWSLT2016
+>>> train_iter, valid_iter, test_iter = IWSLT2016()
+>>> src_sentence, tgt_sentence = next(iter(train_iter))
+
+
+
+IWSLT2016 dataset
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+For additional details refer to https://wit3.fbk.eu/2016-01
+The available datasets include following:
+Language pairs:
+“en”
+“fr”
+“de”
+“cs”
+“ar”
+“en”
+x
+x
+x
+x
+“fr”
+x
+“de”
+x
+“cs”
+x
+“ar”
+x
+valid/test sets: [“dev2010”, “tst2010”, “tst2011”, “tst2012”, “tst2013”, “tst2014”]
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (‘train’, ‘valid’, ‘test’)
+language_pair – tuple or list containing src and tgt language
+valid_set – a string to identify validation set.
+test_set – a string to identify test set.
+
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (‘train’, ‘valid’, ‘test’)
+language_pair – tuple or list containing src and tgt language
+valid_set – a string to identify validation set.
+test_set – a string to identify test set.
+Returns:
+DataPipe that yields tuple of source and target sentences
+
+DataPipe that yields tuple of source and target sentences
+Return type:
+(str, str)
+
+(str, str)
+Examples
+>>> from torchtext.datasets import IWSLT2016
+>>> train_iter, valid_iter, test_iter = IWSLT2016()
+>>> src_sentence, tgt_sentence = next(iter(train_iter))
+
+IWSLT2017¶
+
+torchtext.datasets.IWSLT2017(root='.data', split=('train', 'valid', 'test'), language_pair=('de', 'en'))[source]¶
+IWSLT2017 dataset
+
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+
+For additional details refer to https://wit3.fbk.eu/2017-01
+The available datasets include following:
+Language pairs:
+
+
+
+“en”
+“nl”
+“de”
+“it”
+“ro”
+
+“en”
+
+x
+x
+x
+x
+
+“nl”
+x
+
+x
+x
+x
+
+“de”
+x
+x
+
+x
+x
+
+“it”
+x
+x
+x
+
+x
+
+“ro”
+x
+x
+x
+x
+
+
+
+
+
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (‘train’, ‘valid’, ‘test’)
+language_pair – tuple or list containing src and tgt language
+
+
+Returns:
+DataPipe that yields tuple of source and target sentences
+
+Return type:
+(str, str)
+
+
+Examples
+>>> from torchtext.datasets import IWSLT2017
+>>> train_iter, valid_iter, test_iter = IWSLT2017()
+>>> src_sentence, tgt_sentence = next(iter(train_iter))
+
+
+
+IWSLT2017 dataset
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+For additional details refer to https://wit3.fbk.eu/2017-01
+The available datasets include following:
+Language pairs:
+“en”
+“nl”
+“de”
+“it”
+“ro”
+“en”
+x
+x
+x
+x
+“nl”
+x
+x
+x
+x
+“de”
+x
+x
+x
+x
+“it”
+x
+x
+x
+x
+“ro”
+x
+x
+x
+x
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (‘train’, ‘valid’, ‘test’)
+language_pair – tuple or list containing src and tgt language
+
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (‘train’, ‘valid’, ‘test’)
+language_pair – tuple or list containing src and tgt language
+Returns:
+DataPipe that yields tuple of source and target sentences
+
+DataPipe that yields tuple of source and target sentences
+Return type:
+(str, str)
+
+(str, str)
+Examples
+>>> from torchtext.datasets import IWSLT2017
+>>> train_iter, valid_iter, test_iter = IWSLT2017()
+>>> src_sentence, tgt_sentence = next(iter(train_iter))
+
+Multi30k¶
+
+torchtext.datasets.Multi30k(root: str = '.data', split: Union[Tuple[str], str] = ('train', 'valid', 'test'), language_pair: Tuple[str] = ('de', 'en'))[source]¶
+Multi30k dataset
+
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+
+For additional details refer to https://www.statmt.org/wmt16/multimodal-task.html#task1
+
+Number of lines per split:
+train: 29000
+valid: 1014
+test: 1000
+
+
+
+
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (‘train’, ‘valid’, ‘test’)
+language_pair – tuple or list containing src and tgt language. Available options are (‘de’,’en’) and (‘en’, ‘de’)
+
+
+Returns:
+DataPipe that yields tuple of source and target sentences
+
+Return type:
+(str, str)
+
+
+
+Tutorials using Multi30k:
+T5-Base Model for Summarization, Sentiment Classification, and Translation
+T5-Base Model for Summarization, Sentiment Classification, and Translation
+
+
+
+Multi30k dataset
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+For additional details refer to https://www.statmt.org/wmt16/multimodal-task.html#task1
+Number of lines per split:
+
+train: 29000
+valid: 1014
+test: 1000
+
+
+train: 29000
+valid: 1014
+test: 1000
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (‘train’, ‘valid’, ‘test’)
+language_pair – tuple or list containing src and tgt language. Available options are (‘de’,’en’) and (‘en’, ‘de’)
+
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (‘train’, ‘valid’, ‘test’)
+language_pair – tuple or list containing src and tgt language. Available options are (‘de’,’en’) and (‘en’, ‘de’)
+Returns:
+DataPipe that yields tuple of source and target sentences
+
+DataPipe that yields tuple of source and target sentences
+Return type:
+(str, str)
+
+(str, str)
+Tutorials using Multi30k:
+
+T5-Base Model for Summarization, Sentiment Classification, and Translation
+T5-Base Model for Summarization, Sentiment Classification, and Translation
+
+T5-Base Model for Summarization, Sentiment Classification, and Translation
+Sequence Tagging¶
+CoNLL2000Chunking¶
+
+torchtext.datasets.CoNLL2000Chunking(root: str = '.data', split: Union[Tuple[str], str] = ('train', 'test'))[source]¶
+CoNLL2000Chunking Dataset
+
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+
+For additional details refer to https://www.clips.uantwerpen.be/conll2000/chunking/
+
+Number of lines per split:
+train: 8936
+test: 2012
+
+
+
+
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+
+
+Returns:
+DataPipe that yields list of words along with corresponding Parts-of-speech tag and chunk tag
+
+Return type:
+[list(str), list(str), list(str)]
+
+
+
+CoNLL2000Chunking Dataset
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+For additional details refer to https://www.clips.uantwerpen.be/conll2000/chunking/
+Number of lines per split:
+
+train: 8936
+test: 2012
+
+
+train: 8936
+test: 2012
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, test)
+Returns:
+DataPipe that yields list of words along with corresponding Parts-of-speech tag and chunk tag
+
+DataPipe that yields list of words along with corresponding Parts-of-speech tag and chunk tag
+Return type:
+[list(str), list(str), list(str)]
+
+[list(str), list(str), list(str)]
+UDPOS¶
+
+torchtext.datasets.UDPOS(root: str = '.data', split: Union[Tuple[str], str] = ('train', 'valid', 'test'))[source]¶
+UDPOS Dataset
+
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+
+
+Number of lines per split:
+train: 12543
+valid: 2002
+test: 2077
+
+
+
+
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, valid, test)
+
+
+Returns:
+DataPipe that yields list of words along with corresponding parts-of-speech tags
+
+Return type:
+[list(str), list(str)]
+
+
+
+UDPOS Dataset
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+Number of lines per split:
+
+train: 12543
+valid: 2002
+test: 2077
+
+
+train: 12543
+valid: 2002
+test: 2077
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, valid, test)
+
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, valid, test)
+Returns:
+DataPipe that yields list of words along with corresponding parts-of-speech tags
+
+DataPipe that yields list of words along with corresponding parts-of-speech tags
+Return type:
+[list(str), list(str)]
+
+[list(str), list(str)]
+Question Answer¶
+SQuAD 1.0¶
+
+torchtext.datasets.SQuAD1(root: str = '.data', split: Union[Tuple[str], str] = ('train', 'dev'))[source]¶
+SQuAD1 Dataset
+
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+
+For additional details refer to https://rajpurkar.github.io/SQuAD-explorer/
+
+Number of lines per split:
+train: 87599
+dev: 10570
+
+
+
+
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, dev)
+
+
+Returns:
+DataPipe that yields data points from SQuaAD1 dataset which consist of context, question, list of answers and corresponding index in context
+
+Return type:
+(str, str, list(str), list(int))
+
+
+
+SQuAD1 Dataset
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+For additional details refer to https://rajpurkar.github.io/SQuAD-explorer/
+Number of lines per split:
+
+train: 87599
+dev: 10570
+
+
+train: 87599
+dev: 10570
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, dev)
+
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, dev)
+Returns:
+DataPipe that yields data points from SQuaAD1 dataset which consist of context, question, list of answers and corresponding index in context
+
+DataPipe that yields data points from SQuaAD1 dataset which consist of context, question, list of answers and corresponding index in context
+Return type:
+(str, str, list(str), list(int))
+
+(str, str, list(str), list(int))
+SQuAD 2.0¶
+
+torchtext.datasets.SQuAD2(root: str = '.data', split: Union[Tuple[str], str] = ('train', 'dev'))[source]¶
+SQuAD2 Dataset
+
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+
+For additional details refer to https://rajpurkar.github.io/SQuAD-explorer/
+
+Number of lines per split:
+train: 130319
+dev: 11873
+
+
+
+
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, dev)
+
+
+Returns:
+DataPipe that yields data points from SQuaAD1 dataset which consist of context, question, list of answers and corresponding index in context
+
+Return type:
+(str, str, list(str), list(int))
+
+
+
+SQuAD2 Dataset
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+For additional details refer to https://rajpurkar.github.io/SQuAD-explorer/
+Number of lines per split:
+
+train: 130319
+dev: 11873
+
+
+train: 130319
+dev: 11873
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, dev)
+
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+split – split or splits to be returned. Can be a string or tuple of strings. Default: (train, dev)
+Returns:
+DataPipe that yields data points from SQuaAD1 dataset which consist of context, question, list of answers and corresponding index in context
+
+DataPipe that yields data points from SQuaAD1 dataset which consist of context, question, list of answers and corresponding index in context
+Return type:
+(str, str, list(str), list(int))
+
+(str, str, list(str), list(int))
+Unsupervised Learning¶
+CC100¶
+
+torchtext.datasets.CC100(root: str, language_code: str = 'en')[source]¶
+CC100 Dataset
+
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+
+For additional details refer to https://data.statmt.org/cc-100/
+
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+language_code – the language of the dataset
+
+
+Returns:
+DataPipe that yields tuple of language code and text
+
+Return type:
+(str, str)
+
+
+
+CC100 Dataset
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+For additional details refer to https://data.statmt.org/cc-100/
+Parameters:
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+language_code – the language of the dataset
+
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+language_code – the language of the dataset
+Returns:
+DataPipe that yields tuple of language code and text
+
+DataPipe that yields tuple of language code and text
+Return type:
+(str, str)
+
+(str, str)
+EnWik9¶
+
+torchtext.datasets.EnWik9(root: str)[source]¶
+EnWik9 dataset
+
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+
+For additional details refer to http://mattmahoney.net/dc/textdata.html
+Number of lines in dataset: 13147026
+
+Parameters:
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+
+Returns:
+DataPipe that yields raw text rows from WnWik9 dataset
+
+Return type:
+str
+
+
+
+EnWik9 dataset
+Warning
+using datapipes is still currently subject to a few caveats. if you wish
+to use this dataset with shuffling, multi-processing, or distributed
+learning, please see this note for further
+instructions.
+For additional details refer to http://mattmahoney.net/dc/textdata.html
+Number of lines in dataset: 13147026
+Parameters:
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+
+root – Directory where the datasets are saved. Default: os.path.expanduser(‘~/.torchtext/cache’)
+Returns:
+DataPipe that yields raw text rows from WnWik9 dataset
+
+DataPipe that yields raw text rows from WnWik9 dataset
+Return type:
+str
+
+str 
+
+source: https://pytorch.org/text/stable/vocab.html 
+content: 
+
+torchtext.vocab¶
+Vocab¶
+
+class torchtext.vocab.Vocab(vocab)[source]¶
+
+
+__contains__(token: str) → bool[source]¶
+
+Parameters:
+token – The token for which to check the membership.
+
+Returns:
+Whether the token is member of vocab or not.
+
+
+
+
+
+__getitem__(token: str) → int[source]¶
+
+Parameters:
+token – The token used to lookup the corresponding index.
+
+Returns:
+The index corresponding to the associated token.
+
+
+
+
+
+__init__(vocab) → None[source]¶
+Initialize internal Module state, shared by both nn.Module and ScriptModule.
+
+
+
+__jit_unused_properties__ = ['is_jitable']¶
+Creates a vocab object which maps tokens to indices.
+
+Parameters:
+vocab (torch.classes.torchtext.Vocab or torchtext._torchtext.Vocab) – a cpp vocab object.
+
+
+
+
+
+__len__() → int[source]¶
+
+Returns:
+The length of the vocab.
+
+
+
+
+
+__prepare_scriptable__()[source]¶
+Return a JITable Vocab.
+
+
+
+append_token(token: str) → None[source]¶
+
+Parameters:
+token – The token used to lookup the corresponding index.
+
+Raises:
+RuntimeError – If token already exists in the vocab
+
+
+
+
+
+forward(tokens: List[str]) → List[int][source]¶
+Calls the lookup_indices method
+
+Parameters:
+tokens – a list of tokens used to lookup their corresponding indices.
+
+Returns:
+The indices associated with a list of tokens.
+
+
+
+
+
+get_default_index() → Optional[int][source]¶
+
+Returns:
+Value of default index if it is set.
+
+
+
+
+
+get_itos() → List[str][source]¶
+
+Returns:
+List mapping indices to tokens.
+
+
+
+
+
+get_stoi() → Dict[str, int][source]¶
+
+Returns:
+Dictionary mapping tokens to indices.
+
+
+
+
+
+insert_token(token: str, index: int) → None[source]¶
+
+Parameters:
+
+token – The token used to lookup the corresponding index.
+index – The index corresponding to the associated token.
+
+
+Raises:
+RuntimeError – If index is not in range [0, Vocab.size()] or if token already exists in the vocab.
+
+
+
+
+
+lookup_indices(tokens: List[str]) → List[int][source]¶
+
+Parameters:
+tokens – the tokens used to lookup their corresponding indices.
+
+Returns:
+The ‘indices` associated with tokens.
+
+
+
+
+
+lookup_token(index: int) → str[source]¶
+
+Parameters:
+index – The index corresponding to the associated token.
+
+Returns:
+The token used to lookup the corresponding index.
+
+Return type:
+token
+
+Raises:
+RuntimeError – If index not in range [0, itos.size()).
+
+
+
+
+
+lookup_tokens(indices: List[int]) → List[str][source]¶
+
+Parameters:
+indices – The indices used to lookup their corresponding`tokens`.
+
+Returns:
+The tokens associated with indices.
+
+Raises:
+RuntimeError – If an index within indices is not int range [0, itos.size()).
+
+
+
+
+
+set_default_index(index: Optional[int]) → None[source]¶
+
+Parameters:
+index – Value of default index. This index will be returned when OOV token is queried.
+
+
+
+
+
+__contains__(token: str) → bool[source]¶
+
+Parameters:
+token – The token for which to check the membership.
+
+Returns:
+Whether the token is member of vocab or not.
+
+
+
+Parameters:
+token – The token for which to check the membership.
+
+token – The token for which to check the membership.
+Returns:
+Whether the token is member of vocab or not.
+
+Whether the token is member of vocab or not.
+
+__getitem__(token: str) → int[source]¶
+
+Parameters:
+token – The token used to lookup the corresponding index.
+
+Returns:
+The index corresponding to the associated token.
+
+
+
+Parameters:
+token – The token used to lookup the corresponding index.
+
+token – The token used to lookup the corresponding index.
+Returns:
+The index corresponding to the associated token.
+
+The index corresponding to the associated token.
+
+__init__(vocab) → None[source]¶
+Initialize internal Module state, shared by both nn.Module and ScriptModule.
+
+Initialize internal Module state, shared by both nn.Module and ScriptModule.
+
+__jit_unused_properties__ = ['is_jitable']¶
+Creates a vocab object which maps tokens to indices.
+
+Parameters:
+vocab (torch.classes.torchtext.Vocab or torchtext._torchtext.Vocab) – a cpp vocab object.
+
+
+
+Creates a vocab object which maps tokens to indices.
+Parameters:
+vocab (torch.classes.torchtext.Vocab or torchtext._torchtext.Vocab) – a cpp vocab object.
+
+vocab (torch.classes.torchtext.Vocab or torchtext._torchtext.Vocab) – a cpp vocab object.
+
+__len__() → int[source]¶
+
+Returns:
+The length of the vocab.
+
+
+
+Returns:
+The length of the vocab.
+
+The length of the vocab.
+
+__prepare_scriptable__()[source]¶
+Return a JITable Vocab.
+
+Return a JITable Vocab.
+
+append_token(token: str) → None[source]¶
+
+Parameters:
+token – The token used to lookup the corresponding index.
+
+Raises:
+RuntimeError – If token already exists in the vocab
+
+
+
+Parameters:
+token – The token used to lookup the corresponding index.
+
+token – The token used to lookup the corresponding index.
+Raises:
+RuntimeError – If token already exists in the vocab
+
+RuntimeError – If token already exists in the vocab
+
+forward(tokens: List[str]) → List[int][source]¶
+Calls the lookup_indices method
+
+Parameters:
+tokens – a list of tokens used to lookup their corresponding indices.
+
+Returns:
+The indices associated with a list of tokens.
+
+
+
+Calls the lookup_indices method
+Parameters:
+tokens – a list of tokens used to lookup their corresponding indices.
+
+tokens – a list of tokens used to lookup their corresponding indices.
+Returns:
+The indices associated with a list of tokens.
+
+The indices associated with a list of tokens.
+
+get_default_index() → Optional[int][source]¶
+
+Returns:
+Value of default index if it is set.
+
+
+
+Returns:
+Value of default index if it is set.
+
+Value of default index if it is set.
+
+get_itos() → List[str][source]¶
+
+Returns:
+List mapping indices to tokens.
+
+
+
+Returns:
+List mapping indices to tokens.
+
+List mapping indices to tokens.
+
+get_stoi() → Dict[str, int][source]¶
+
+Returns:
+Dictionary mapping tokens to indices.
+
+
+
+Returns:
+Dictionary mapping tokens to indices.
+
+Dictionary mapping tokens to indices.
+
+insert_token(token: str, index: int) → None[source]¶
+
+Parameters:
+
+token – The token used to lookup the corresponding index.
+index – The index corresponding to the associated token.
+
+
+Raises:
+RuntimeError – If index is not in range [0, Vocab.size()] or if token already exists in the vocab.
+
+
+
+Parameters:
+
+token – The token used to lookup the corresponding index.
+index – The index corresponding to the associated token.
+
+
+token – The token used to lookup the corresponding index.
+index – The index corresponding to the associated token.
+Raises:
+RuntimeError – If index is not in range [0, Vocab.size()] or if token already exists in the vocab.
+
+RuntimeError – If index is not in range [0, Vocab.size()] or if token already exists in the vocab.
+
+lookup_indices(tokens: List[str]) → List[int][source]¶
+
+Parameters:
+tokens – the tokens used to lookup their corresponding indices.
+
+Returns:
+The ‘indices` associated with tokens.
+
+
+
+Parameters:
+tokens – the tokens used to lookup their corresponding indices.
+
+tokens – the tokens used to lookup their corresponding indices.
+Returns:
+The ‘indices` associated with tokens.
+
+The ‘indices` associated with tokens.
+
+lookup_token(index: int) → str[source]¶
+
+Parameters:
+index – The index corresponding to the associated token.
+
+Returns:
+The token used to lookup the corresponding index.
+
+Return type:
+token
+
+Raises:
+RuntimeError – If index not in range [0, itos.size()).
+
+
+
+Parameters:
+index – The index corresponding to the associated token.
+
+index – The index corresponding to the associated token.
+Returns:
+The token used to lookup the corresponding index.
+
+The token used to lookup the corresponding index.
+Return type:
+token
+
+token
+Raises:
+RuntimeError – If index not in range [0, itos.size()).
+
+RuntimeError – If index not in range [0, itos.size()).
+
+lookup_tokens(indices: List[int]) → List[str][source]¶
+
+Parameters:
+indices – The indices used to lookup their corresponding`tokens`.
+
+Returns:
+The tokens associated with indices.
+
+Raises:
+RuntimeError – If an index within indices is not int range [0, itos.size()).
+
+
+
+Parameters:
+indices – The indices used to lookup their corresponding`tokens`.
+
+indices – The indices used to lookup their corresponding`tokens`.
+Returns:
+The tokens associated with indices.
+
+The tokens associated with indices.
+Raises:
+RuntimeError – If an index within indices is not int range [0, itos.size()).
+
+RuntimeError – If an index within indices is not int range [0, itos.size()).
+
+set_default_index(index: Optional[int]) → None[source]¶
+
+Parameters:
+index – Value of default index. This index will be returned when OOV token is queried.
+
+
+
+Parameters:
+index – Value of default index. This index will be returned when OOV token is queried.
+
+index – Value of default index. This index will be returned when OOV token is queried.
+vocab¶
+
+torchtext.vocab.vocab(ordered_dict: Dict, min_freq: int = 1, specials: Optional[List[str]] = None, special_first: bool = True) → Vocab[source]¶
+Factory method for creating a vocab object which maps tokens to indices.
+Note that the ordering in which key value pairs were inserted in the ordered_dict will be respected when building the vocab.
+Therefore if sorting by token frequency is important to the user, the ordered_dict should be created in a way to reflect this.
+
+Parameters:
+
+ordered_dict – Ordered Dictionary mapping tokens to their corresponding occurance frequencies.
+min_freq – The minimum frequency needed to include a token in the vocabulary.
+specials – Special symbols to add. The order of supplied tokens will be preserved.
+special_first – Indicates whether to insert symbols at the beginning or at the end.
+
+
+Returns:
+A Vocab object
+
+Return type:
+torchtext.vocab.Vocab
+
+
+Examples
+>>> from torchtext.vocab import vocab
+>>> from collections import Counter, OrderedDict
+>>> counter = Counter(["a", "a", "b", "b", "b"])
+>>> sorted_by_freq_tuples = sorted(counter.items(), key=lambda x: x[1], reverse=True)
+>>> ordered_dict = OrderedDict(sorted_by_freq_tuples)
+>>> v1 = vocab(ordered_dict)
+>>> print(v1['a']) #prints 1
+>>> print(v1['out of vocab']) #raise RuntimeError since default index is not set
+>>> tokens = ['e', 'd', 'c', 'b', 'a']
+>>> #adding <unk> token and default index
+>>> unk_token = '<unk>'
+>>> default_index = -1
+>>> v2 = vocab(OrderedDict([(token, 1) for token in tokens]), specials=[unk_token])
+>>> v2.set_default_index(default_index)
+>>> print(v2['<unk>']) #prints 0
+>>> print(v2['out of vocab']) #prints -1
+>>> #make default index same as index of unk_token
+>>> v2.set_default_index(v2[unk_token])
+>>> v2['out of vocab'] is v2[unk_token] #prints True
+
+
+
+Factory method for creating a vocab object which maps tokens to indices.
+Note that the ordering in which key value pairs were inserted in the ordered_dict will be respected when building the vocab.
+Therefore if sorting by token frequency is important to the user, the ordered_dict should be created in a way to reflect this.
+Parameters:
+
+ordered_dict – Ordered Dictionary mapping tokens to their corresponding occurance frequencies.
+min_freq – The minimum frequency needed to include a token in the vocabulary.
+specials – Special symbols to add. The order of supplied tokens will be preserved.
+special_first – Indicates whether to insert symbols at the beginning or at the end.
+
+
+ordered_dict – Ordered Dictionary mapping tokens to their corresponding occurance frequencies.
+min_freq – The minimum frequency needed to include a token in the vocabulary.
+specials – Special symbols to add. The order of supplied tokens will be preserved.
+special_first – Indicates whether to insert symbols at the beginning or at the end.
+Returns:
+A Vocab object
+
+A Vocab object
+Return type:
+torchtext.vocab.Vocab
+
+torchtext.vocab.Vocab
+Examples
+>>> from torchtext.vocab import vocab
+>>> from collections import Counter, OrderedDict
+>>> counter = Counter(["a", "a", "b", "b", "b"])
+>>> sorted_by_freq_tuples = sorted(counter.items(), key=lambda x: x[1], reverse=True)
+>>> ordered_dict = OrderedDict(sorted_by_freq_tuples)
+>>> v1 = vocab(ordered_dict)
+>>> print(v1['a']) #prints 1
+>>> print(v1['out of vocab']) #raise RuntimeError since default index is not set
+>>> tokens = ['e', 'd', 'c', 'b', 'a']
+>>> #adding <unk> token and default index
+>>> unk_token = '<unk>'
+>>> default_index = -1
+>>> v2 = vocab(OrderedDict([(token, 1) for token in tokens]), specials=[unk_token])
+>>> v2.set_default_index(default_index)
+>>> print(v2['<unk>']) #prints 0
+>>> print(v2['out of vocab']) #prints -1
+>>> #make default index same as index of unk_token
+>>> v2.set_default_index(v2[unk_token])
+>>> v2['out of vocab'] is v2[unk_token] #prints True
+
+build_vocab_from_iterator¶
+
+torchtext.vocab.build_vocab_from_iterator(iterator: Iterable, min_freq: int = 1, specials: Optional[List[str]] = None, special_first: bool = True, max_tokens: Optional[int] = None) → Vocab[source]¶
+Build a Vocab from an iterator.
+
+Parameters:
+
+iterator – Iterator used to build Vocab. Must yield list or iterator of tokens.
+min_freq – The minimum frequency needed to include a token in the vocabulary.
+specials – Special symbols to add. The order of supplied tokens will be preserved.
+special_first – Indicates whether to insert symbols at the beginning or at the end.
+max_tokens – If provided, creates the vocab from the max_tokens - len(specials) most frequent tokens.
+
+
+Returns:
+A Vocab object
+
+Return type:
+torchtext.vocab.Vocab
+
+
+Examples
+>>> #generating vocab from text file
+>>> import io
+>>> from torchtext.vocab import build_vocab_from_iterator
+>>> def yield_tokens(file_path):
+>>>     with io.open(file_path, encoding = 'utf-8') as f:
+>>>         for line in f:
+>>>             yield line.strip().split()
+>>> vocab = build_vocab_from_iterator(yield_tokens(file_path), specials=["<unk>"])
+
+
+
+Build a Vocab from an iterator.
+Parameters:
+
+iterator – Iterator used to build Vocab. Must yield list or iterator of tokens.
+min_freq – The minimum frequency needed to include a token in the vocabulary.
+specials – Special symbols to add. The order of supplied tokens will be preserved.
+special_first – Indicates whether to insert symbols at the beginning or at the end.
+max_tokens – If provided, creates the vocab from the max_tokens - len(specials) most frequent tokens.
+
+
+iterator – Iterator used to build Vocab. Must yield list or iterator of tokens.
+min_freq – The minimum frequency needed to include a token in the vocabulary.
+specials – Special symbols to add. The order of supplied tokens will be preserved.
+special_first – Indicates whether to insert symbols at the beginning or at the end.
+max_tokens – If provided, creates the vocab from the max_tokens - len(specials) most frequent tokens.
+Returns:
+A Vocab object
+
+A Vocab object
+Return type:
+torchtext.vocab.Vocab
+
+torchtext.vocab.Vocab
+Examples
+>>> #generating vocab from text file
+>>> import io
+>>> from torchtext.vocab import build_vocab_from_iterator
+>>> def yield_tokens(file_path):
+>>>     with io.open(file_path, encoding = 'utf-8') as f:
+>>>         for line in f:
+>>>             yield line.strip().split()
+>>> vocab = build_vocab_from_iterator(yield_tokens(file_path), specials=["<unk>"])
+
+Vectors¶
+
+class torchtext.vocab.Vectors(name, cache=None, url=None, unk_init=None, max_vectors=None)[source]¶
+
+
+__init__(name, cache=None, url=None, unk_init=None, max_vectors=None) → None[source]¶
+
+Parameters:
+
+name – name of the file that contains the vectors
+cache – directory for cached vectors
+url – url for download if vectors not found in cache
+unk_init (callback) – by default, initialize out-of-vocabulary word vectors
+to zero vectors; can be any function that takes in a Tensor and returns a Tensor of the same size
+max_vectors (int) – this can be used to limit the number of
+pre-trained vectors loaded.
+Most pre-trained vector sets are sorted
+in the descending order of word frequency.
+Thus, in situations where the entire set doesn’t fit in memory,
+or is not needed for another reason, passing max_vectors
+can limit the size of the loaded set.
+
+
+
+
+
+
+get_vecs_by_tokens(tokens, lower_case_backup=False)[source]¶
+Look up embedding vectors of tokens.
+
+Parameters:
+
+tokens – a token or a list of tokens. if tokens is a string,
+returns a 1-D tensor of shape self.dim; if tokens is a
+list of strings, returns a 2-D tensor of shape=(len(tokens),
+self.dim).
+lower_case_backup – Whether to look up the token in the lower case.
+If False, each token in the original case will be looked up;
+if True, each token in the original case will be looked up first,
+if not found in the keys of the property stoi, the token in the
+lower case will be looked up. Default: False.
+
+
+
+Examples
+>>> examples = ['chip', 'baby', 'Beautiful']
+>>> vec = text.vocab.GloVe(name='6B', dim=50)
+>>> ret = vec.get_vecs_by_tokens(examples, lower_case_backup=True)
+
+
+
+
+
+__init__(name, cache=None, url=None, unk_init=None, max_vectors=None) → None[source]¶
+
+Parameters:
+
+name – name of the file that contains the vectors
+cache – directory for cached vectors
+url – url for download if vectors not found in cache
+unk_init (callback) – by default, initialize out-of-vocabulary word vectors
+to zero vectors; can be any function that takes in a Tensor and returns a Tensor of the same size
+max_vectors (int) – this can be used to limit the number of
+pre-trained vectors loaded.
+Most pre-trained vector sets are sorted
+in the descending order of word frequency.
+Thus, in situations where the entire set doesn’t fit in memory,
+or is not needed for another reason, passing max_vectors
+can limit the size of the loaded set.
+
+
+
+
+Parameters:
+
+name – name of the file that contains the vectors
+cache – directory for cached vectors
+url – url for download if vectors not found in cache
+unk_init (callback) – by default, initialize out-of-vocabulary word vectors
+to zero vectors; can be any function that takes in a Tensor and returns a Tensor of the same size
+max_vectors (int) – this can be used to limit the number of
+pre-trained vectors loaded.
+Most pre-trained vector sets are sorted
+in the descending order of word frequency.
+Thus, in situations where the entire set doesn’t fit in memory,
+or is not needed for another reason, passing max_vectors
+can limit the size of the loaded set.
+
+
+name – name of the file that contains the vectors
+cache – directory for cached vectors
+url – url for download if vectors not found in cache
+unk_init (callback) – by default, initialize out-of-vocabulary word vectors
+to zero vectors; can be any function that takes in a Tensor and returns a Tensor of the same size
+max_vectors (int) – this can be used to limit the number of
+pre-trained vectors loaded.
+Most pre-trained vector sets are sorted
+in the descending order of word frequency.
+Thus, in situations where the entire set doesn’t fit in memory,
+or is not needed for another reason, passing max_vectors
+can limit the size of the loaded set.
+
+get_vecs_by_tokens(tokens, lower_case_backup=False)[source]¶
+Look up embedding vectors of tokens.
+
+Parameters:
+
+tokens – a token or a list of tokens. if tokens is a string,
+returns a 1-D tensor of shape self.dim; if tokens is a
+list of strings, returns a 2-D tensor of shape=(len(tokens),
+self.dim).
+lower_case_backup – Whether to look up the token in the lower case.
+If False, each token in the original case will be looked up;
+if True, each token in the original case will be looked up first,
+if not found in the keys of the property stoi, the token in the
+lower case will be looked up. Default: False.
+
+
+
+Examples
+>>> examples = ['chip', 'baby', 'Beautiful']
+>>> vec = text.vocab.GloVe(name='6B', dim=50)
+>>> ret = vec.get_vecs_by_tokens(examples, lower_case_backup=True)
+
+
+
+Look up embedding vectors of tokens.
+Parameters:
+
+tokens – a token or a list of tokens. if tokens is a string,
+returns a 1-D tensor of shape self.dim; if tokens is a
+list of strings, returns a 2-D tensor of shape=(len(tokens),
+self.dim).
+lower_case_backup – Whether to look up the token in the lower case.
+If False, each token in the original case will be looked up;
+if True, each token in the original case will be looked up first,
+if not found in the keys of the property stoi, the token in the
+lower case will be looked up. Default: False.
+
+
+tokens – a token or a list of tokens. if tokens is a string,
+returns a 1-D tensor of shape self.dim; if tokens is a
+list of strings, returns a 2-D tensor of shape=(len(tokens),
+self.dim).
+lower_case_backup – Whether to look up the token in the lower case.
+If False, each token in the original case will be looked up;
+if True, each token in the original case will be looked up first,
+if not found in the keys of the property stoi, the token in the
+lower case will be looked up. Default: False.
+Examples
+>>> examples = ['chip', 'baby', 'Beautiful']
+>>> vec = text.vocab.GloVe(name='6B', dim=50)
+>>> ret = vec.get_vecs_by_tokens(examples, lower_case_backup=True)
+
+Pretrained Word Embeddings¶
+GloVe¶
+
+class torchtext.vocab.GloVe(name='840B', dim=300, **kwargs)[source]¶
+
+FastText¶
+
+class torchtext.vocab.FastText(language='en', **kwargs)[source]¶
+
+CharNGram¶
+
+class torchtext.vocab.CharNGram(**kwargs)[source]¶
+ 
+
+source: https://pytorch.org/text/stable/utils.html 
+content: 
+
+torchtext.utils¶
+reporthook¶
+
+torchtext.utils.reporthook(t)[source]¶
+https://github.com/tqdm/tqdm.
+
+https://github.com/tqdm/tqdm.
+download_from_url¶
+
+torchtext.utils.download_from_url(url, path=None, root='.data', overwrite=False, hash_value=None, hash_type='sha256')[source]¶
+Download file, with logic (from tensor2tensor) for Google Drive. Returns
+the path to the downloaded file.
+:param url: the url of the file from URL header. (None)
+:param path: path where file will be saved
+:param root: download folder used to store the file in (.data)
+:param overwrite: overwrite existing files (False)
+:param hash_value: hash for url (Default: None).
+:type hash_value: str, optional
+:param hash_type: hash type, among “sha256” and “md5” (Default: "sha256").
+:type hash_type: str, optional
+Examples
+>>> url = 'http://www.quest.dcs.shef.ac.uk/wmt16_files_mmt/validation.tar.gz'
+>>> torchtext.utils.download_from_url(url)
+>>> url = 'http://www.quest.dcs.shef.ac.uk/wmt16_files_mmt/validation.tar.gz'
+>>> torchtext.utils.download_from_url(url)
+>>> '.data/validation.tar.gz'
+
+
+
+Download file, with logic (from tensor2tensor) for Google Drive. Returns
+the path to the downloaded file.
+:param url: the url of the file from URL header. (None)
+:param path: path where file will be saved
+:param root: download folder used to store the file in (.data)
+:param overwrite: overwrite existing files (False)
+:param hash_value: hash for url (Default: None).
+:type hash_value: str, optional
+:param hash_type: hash type, among “sha256” and “md5” (Default: "sha256").
+:type hash_type: str, optional
+Examples
+>>> url = 'http://www.quest.dcs.shef.ac.uk/wmt16_files_mmt/validation.tar.gz'
+>>> torchtext.utils.download_from_url(url)
+>>> url = 'http://www.quest.dcs.shef.ac.uk/wmt16_files_mmt/validation.tar.gz'
+>>> torchtext.utils.download_from_url(url)
+>>> '.data/validation.tar.gz'
+
+extract_archive¶
+
+torchtext.utils.extract_archive(from_path, to_path=None, overwrite=False)[source]¶
+Extract archive.
+:param from_path: the path of the archive.
+:param to_path: the root path of the extracted files (directory of from_path)
+:param overwrite: overwrite existing files (False)
+
+Returns:
+List of paths to extracted files even if not overwritten.
+
+
+Examples
+>>> url = 'http://www.quest.dcs.shef.ac.uk/wmt16_files_mmt/validation.tar.gz'
+>>> from_path = './validation.tar.gz'
+>>> to_path = './'
+>>> torchtext.utils.download_from_url(url, from_path)
+>>> torchtext.utils.extract_archive(from_path, to_path)
+>>> ['.data/val.de', '.data/val.en']
+>>> torchtext.utils.download_from_url(url, from_path)
+>>> torchtext.utils.extract_archive(from_path, to_path)
+>>> ['.data/val.de', '.data/val.en']
+
+
+
+Extract archive.
+:param from_path: the path of the archive.
+:param to_path: the root path of the extracted files (directory of from_path)
+:param overwrite: overwrite existing files (False)
+Returns:
+List of paths to extracted files even if not overwritten.
+
+List of paths to extracted files even if not overwritten.
+Examples
+>>> url = 'http://www.quest.dcs.shef.ac.uk/wmt16_files_mmt/validation.tar.gz'
+>>> from_path = './validation.tar.gz'
+>>> to_path = './'
+>>> torchtext.utils.download_from_url(url, from_path)
+>>> torchtext.utils.extract_archive(from_path, to_path)
+>>> ['.data/val.de', '.data/val.en']
+>>> torchtext.utils.download_from_url(url, from_path)
+>>> torchtext.utils.extract_archive(from_path, to_path)
+>>> ['.data/val.de', '.data/val.en']
+ 
+
+source: https://pytorch.org/text/stable/transforms.html 
+content: 
+
+torchtext.transforms¶
+Transforms are common text transforms. They can be chained together using torch.nn.Sequential or using torchtext.transforms.Sequential to support torch-scriptability.
+SentencePieceTokenizer¶
+
+class torchtext.transforms.SentencePieceTokenizer(sp_model_path: str)[source]¶
+Transform for Sentence Piece tokenizer from pre-trained sentencepiece model
+Additional details: https://github.com/google/sentencepiece
+
+Parameters:
+sp_model_path (str) – Path to pre-trained sentencepiece model
+
+
+
+Example>>> from torchtext.transforms import SentencePieceTokenizer
+>>> transform = SentencePieceTokenizer("spm_model")
+>>> transform(["hello world", "attention is all you need!"])
+
+
+
+Tutorials using SentencePieceTokenizer:
+SST-2 Binary text classification with XLM-RoBERTa model
+SST-2 Binary text classification with XLM-RoBERTa model
+
+
+
+
+forward(input: Any) → Any[source]¶
+
+Parameters:
+input (Union[str, List[str]]) – Input sentence or list of sentences on which to apply tokenizer.
+
+Returns:
+tokenized text
+
+Return type:
+Union[List[str], List[List[str]]]
+
+
+
+
+Transform for Sentence Piece tokenizer from pre-trained sentencepiece model
+Additional details: https://github.com/google/sentencepiece
+Parameters:
+sp_model_path (str) – Path to pre-trained sentencepiece model
+
+sp_model_path (str) – Path to pre-trained sentencepiece model
+Example
+>>> from torchtext.transforms import SentencePieceTokenizer
+>>> transform = SentencePieceTokenizer("spm_model")
+>>> transform(["hello world", "attention is all you need!"])
+
+
+
+>>> from torchtext.transforms import SentencePieceTokenizer
+>>> transform = SentencePieceTokenizer("spm_model")
+>>> transform(["hello world", "attention is all you need!"])
+
+Tutorials using SentencePieceTokenizer:
+
+SST-2 Binary text classification with XLM-RoBERTa model
+SST-2 Binary text classification with XLM-RoBERTa model
+
+SST-2 Binary text classification with XLM-RoBERTa model
+
+forward(input: Any) → Any[source]¶
+
+Parameters:
+input (Union[str, List[str]]) – Input sentence or list of sentences on which to apply tokenizer.
+
+Returns:
+tokenized text
+
+Return type:
+Union[List[str], List[List[str]]]
+
+
+
+Parameters:
+input (Union[str, List[str]]) – Input sentence or list of sentences on which to apply tokenizer.
+
+input (Union[str, List[str]]) – Input sentence or list of sentences on which to apply tokenizer.
+Returns:
+tokenized text
+
+tokenized text
+Return type:
+Union[List[str], List[List[str]]]
+
+Union[List[str], List[List[str]]]
+GPT2BPETokenizer¶
+
+class torchtext.transforms.GPT2BPETokenizer(encoder_json_path: str, vocab_bpe_path: str, return_tokens: bool = False)[source]¶
+Transform for GPT-2 BPE Tokenizer.
+Reimplements openai GPT-2 BPE in TorchScript. Original openai implementation
+https://github.com/openai/gpt-2/blob/master/src/encoder.py
+
+Parameters:
+
+encoder_json_path (str) – Path to GPT-2 BPE encoder json file.
+vocab_bpe_path (str) – Path to bpe vocab file.
+return_tokens – Indicate whether to return split tokens. If False, it will return encoded token IDs as strings (default: False)
+
+
+
+
+
+forward(input: Any) → Any[source]¶
+
+Parameters:
+input (Union[str, List[str]]) – Input sentence or list of sentences on which to apply tokenizer.
+
+Returns:
+tokenized text
+
+Return type:
+Union[List[str], List[List(str)]]
+
+
+
+
+Transform for GPT-2 BPE Tokenizer.
+Reimplements openai GPT-2 BPE in TorchScript. Original openai implementation
+https://github.com/openai/gpt-2/blob/master/src/encoder.py
+Parameters:
+
+encoder_json_path (str) – Path to GPT-2 BPE encoder json file.
+vocab_bpe_path (str) – Path to bpe vocab file.
+return_tokens – Indicate whether to return split tokens. If False, it will return encoded token IDs as strings (default: False)
+
+
+encoder_json_path (str) – Path to GPT-2 BPE encoder json file.
+vocab_bpe_path (str) – Path to bpe vocab file.
+return_tokens – Indicate whether to return split tokens. If False, it will return encoded token IDs as strings (default: False)
+
+forward(input: Any) → Any[source]¶
+
+Parameters:
+input (Union[str, List[str]]) – Input sentence or list of sentences on which to apply tokenizer.
+
+Returns:
+tokenized text
+
+Return type:
+Union[List[str], List[List(str)]]
+
+
+
+Parameters:
+input (Union[str, List[str]]) – Input sentence or list of sentences on which to apply tokenizer.
+
+input (Union[str, List[str]]) – Input sentence or list of sentences on which to apply tokenizer.
+Returns:
+tokenized text
+
+tokenized text
+Return type:
+Union[List[str], List[List(str)]]
+
+Union[List[str], List[List(str)]]
+CLIPTokenizer¶
+
+class torchtext.transforms.CLIPTokenizer(merges_path: str, encoder_json_path: Optional[str] = None, num_merges: Optional[int] = None, return_tokens: bool = False)[source]¶
+Transform for CLIP Tokenizer. Based on Byte-Level BPE.
+Reimplements CLIP Tokenizer in TorchScript. Original implementation:
+https://github.com/mlfoundations/open_clip/blob/main/src/clip/tokenizer.py
+This tokenizer has been trained to treat spaces like parts of the tokens
+(a bit like sentencepiece) so a word will be encoded differently whether it
+is at the beginning of the sentence (without space) or not.
+The below code snippet shows how to use the CLIP tokenizer with encoder and merges file
+taken from the original paper implementation.
+
+Example>>> from torchtext.transforms import CLIPTokenizer
+>>> MERGES_FILE = "http://download.pytorch.org/models/text/clip_merges.bpe"
+>>> ENCODER_FILE = "http://download.pytorch.org/models/text/clip_encoder.json"
+>>> tokenizer = CLIPTokenizer(merges_path=MERGES_FILE, encoder_json_path=ENCODER_FILE)
+>>> tokenizer("the quick brown fox jumped over the lazy dog")
+
+
+
+
+
+Parameters:
+
+merges_path (str) – Path to bpe merges file.
+encoder_json_path (str) – Optional, path to BPE encoder json file. When specified, this is used
+to infer num_merges.
+num_merges (int) – Optional, number of merges to read from the bpe merges file.
+return_tokens – Indicate whether to return split tokens. If False, it will return encoded token IDs as strings (default: False)
+
+
+
+
+
+forward(input: Any) → Any[source]¶
+
+Parameters:
+input (Union[str, List[str]]) – Input sentence or list of sentences on which to apply tokenizer.
+
+Returns:
+tokenized text
+
+Return type:
+Union[List[str], List[List(str)]]
+
+
+
+
+Transform for CLIP Tokenizer. Based on Byte-Level BPE.
+Reimplements CLIP Tokenizer in TorchScript. Original implementation:
+https://github.com/mlfoundations/open_clip/blob/main/src/clip/tokenizer.py
+This tokenizer has been trained to treat spaces like parts of the tokens
+(a bit like sentencepiece) so a word will be encoded differently whether it
+is at the beginning of the sentence (without space) or not.
+The below code snippet shows how to use the CLIP tokenizer with encoder and merges file
+taken from the original paper implementation.
+Example
+>>> from torchtext.transforms import CLIPTokenizer
+>>> MERGES_FILE = "http://download.pytorch.org/models/text/clip_merges.bpe"
+>>> ENCODER_FILE = "http://download.pytorch.org/models/text/clip_encoder.json"
+>>> tokenizer = CLIPTokenizer(merges_path=MERGES_FILE, encoder_json_path=ENCODER_FILE)
+>>> tokenizer("the quick brown fox jumped over the lazy dog")
+
+
+
+>>> from torchtext.transforms import CLIPTokenizer
+>>> MERGES_FILE = "http://download.pytorch.org/models/text/clip_merges.bpe"
+>>> ENCODER_FILE = "http://download.pytorch.org/models/text/clip_encoder.json"
+>>> tokenizer = CLIPTokenizer(merges_path=MERGES_FILE, encoder_json_path=ENCODER_FILE)
+>>> tokenizer("the quick brown fox jumped over the lazy dog")
+
+Parameters:
+
+merges_path (str) – Path to bpe merges file.
+encoder_json_path (str) – Optional, path to BPE encoder json file. When specified, this is used
+to infer num_merges.
+num_merges (int) – Optional, number of merges to read from the bpe merges file.
+return_tokens – Indicate whether to return split tokens. If False, it will return encoded token IDs as strings (default: False)
+
+
+merges_path (str) – Path to bpe merges file.
+encoder_json_path (str) – Optional, path to BPE encoder json file. When specified, this is used
+to infer num_merges.
+num_merges (int) – Optional, number of merges to read from the bpe merges file.
+return_tokens – Indicate whether to return split tokens. If False, it will return encoded token IDs as strings (default: False)
+
+forward(input: Any) → Any[source]¶
+
+Parameters:
+input (Union[str, List[str]]) – Input sentence or list of sentences on which to apply tokenizer.
+
+Returns:
+tokenized text
+
+Return type:
+Union[List[str], List[List(str)]]
+
+
+
+Parameters:
+input (Union[str, List[str]]) – Input sentence or list of sentences on which to apply tokenizer.
+
+input (Union[str, List[str]]) – Input sentence or list of sentences on which to apply tokenizer.
+Returns:
+tokenized text
+
+tokenized text
+Return type:
+Union[List[str], List[List(str)]]
+
+Union[List[str], List[List(str)]]
+RegexTokenizer¶
+
+class torchtext.transforms.RegexTokenizer(patterns_list)[source]¶
+Regex tokenizer for a string sentence that applies all regex replacements defined in patterns_list. It is backed by the C++ RE2 regular expression engine from Google.
+
+Parameters:
+
+patterns_list (List[Tuple[str, str]]) – a list of tuples (ordered pairs) which contain the regex pattern string
+element. (as the first element and the replacement string as the second) – 
+
+
+
+
+Caveats
+The RE2 library does not support arbitrary lookahead or lookbehind assertions, nor does it support backreferences. Look at the docs here for more info.
+The final tokenization step always uses spaces as separators. To split strings based on a specific regex pattern, similar to Python’s re.split, a tuple of ('<regex_pattern>', ' ') can be provided.
+
+
+Example
+Regex tokenization based on (patterns, replacements) list.>>> import torch
+>>> from torchtext.transforms import RegexTokenizer
+>>> test_sample = 'Basic Regex Tokenization for a Line of Text'
+>>> patterns_list = [
+    (r''', ' '  '),
+    (r'"', '')]
+>>> reg_tokenizer = RegexTokenizer(patterns_list)
+>>> jit_reg_tokenizer = torch.jit.script(reg_tokenizer)
+>>> tokens = jit_reg_tokenizer(test_sample)
+
+
+
+Regex tokenization based on (single_pattern, ' ') list.>>> import torch
+>>> from torchtext.transforms import RegexTokenizer
+>>> test_sample = 'Basic.Regex,Tokenization_for+a..Line,,of  Text'
+>>> patterns_list = [
+    (r'[,._+ ]+', r' ')]
+>>> reg_tokenizer = RegexTokenizer(patterns_list)
+>>> jit_reg_tokenizer = torch.jit.script(reg_tokenizer)
+>>> tokens = jit_reg_tokenizer(test_sample)
+
+
+
+
+
+
+
+
+forward(line: str) → List[str][source]¶
+
+Parameters:
+lines (str) – a text string to tokenize.
+
+Returns:
+a token list after regex.
+
+Return type:
+List[str]
+
+
+
+
+Regex tokenizer for a string sentence that applies all regex replacements defined in patterns_list. It is backed by the C++ RE2 regular expression engine from Google.
+Parameters:
+
+patterns_list (List[Tuple[str, str]]) – a list of tuples (ordered pairs) which contain the regex pattern string
+element. (as the first element and the replacement string as the second) – 
+
+
+patterns_list (List[Tuple[str, str]]) – a list of tuples (ordered pairs) which contain the regex pattern string
+element. (as the first element and the replacement string as the second) – 
+Caveats
+
+The RE2 library does not support arbitrary lookahead or lookbehind assertions, nor does it support backreferences. Look at the docs here for more info.
+The final tokenization step always uses spaces as separators. To split strings based on a specific regex pattern, similar to Python’s re.split, a tuple of ('<regex_pattern>', ' ') can be provided.
+
+
+The RE2 library does not support arbitrary lookahead or lookbehind assertions, nor does it support backreferences. Look at the docs here for more info.
+The final tokenization step always uses spaces as separators. To split strings based on a specific regex pattern, similar to Python’s re.split, a tuple of ('<regex_pattern>', ' ') can be provided.
+Example
+
+Regex tokenization based on (patterns, replacements) list.>>> import torch
+>>> from torchtext.transforms import RegexTokenizer
+>>> test_sample = 'Basic Regex Tokenization for a Line of Text'
+>>> patterns_list = [
+    (r''', ' '  '),
+    (r'"', '')]
+>>> reg_tokenizer = RegexTokenizer(patterns_list)
+>>> jit_reg_tokenizer = torch.jit.script(reg_tokenizer)
+>>> tokens = jit_reg_tokenizer(test_sample)
+
+
+
+Regex tokenization based on (single_pattern, ' ') list.>>> import torch
+>>> from torchtext.transforms import RegexTokenizer
+>>> test_sample = 'Basic.Regex,Tokenization_for+a..Line,,of  Text'
+>>> patterns_list = [
+    (r'[,._+ ]+', r' ')]
+>>> reg_tokenizer = RegexTokenizer(patterns_list)
+>>> jit_reg_tokenizer = torch.jit.script(reg_tokenizer)
+>>> tokens = jit_reg_tokenizer(test_sample)
+
+
+
+
+
+Regex tokenization based on (patterns, replacements) list.
+>>> import torch
+>>> from torchtext.transforms import RegexTokenizer
+>>> test_sample = 'Basic Regex Tokenization for a Line of Text'
+>>> patterns_list = [
+    (r''', ' '  '),
+    (r'"', '')]
+>>> reg_tokenizer = RegexTokenizer(patterns_list)
+>>> jit_reg_tokenizer = torch.jit.script(reg_tokenizer)
+>>> tokens = jit_reg_tokenizer(test_sample)
+
+
+
+>>> import torch
+>>> from torchtext.transforms import RegexTokenizer
+>>> test_sample = 'Basic Regex Tokenization for a Line of Text'
+>>> patterns_list = [
+    (r''', ' '  '),
+    (r'"', '')]
+>>> reg_tokenizer = RegexTokenizer(patterns_list)
+>>> jit_reg_tokenizer = torch.jit.script(reg_tokenizer)
+>>> tokens = jit_reg_tokenizer(test_sample)
+
+Regex tokenization based on (single_pattern, ' ') list.
+>>> import torch
+>>> from torchtext.transforms import RegexTokenizer
+>>> test_sample = 'Basic.Regex,Tokenization_for+a..Line,,of  Text'
+>>> patterns_list = [
+    (r'[,._+ ]+', r' ')]
+>>> reg_tokenizer = RegexTokenizer(patterns_list)
+>>> jit_reg_tokenizer = torch.jit.script(reg_tokenizer)
+>>> tokens = jit_reg_tokenizer(test_sample)
+
+
+
+>>> import torch
+>>> from torchtext.transforms import RegexTokenizer
+>>> test_sample = 'Basic.Regex,Tokenization_for+a..Line,,of  Text'
+>>> patterns_list = [
+    (r'[,._+ ]+', r' ')]
+>>> reg_tokenizer = RegexTokenizer(patterns_list)
+>>> jit_reg_tokenizer = torch.jit.script(reg_tokenizer)
+>>> tokens = jit_reg_tokenizer(test_sample)
+
+
+forward(line: str) → List[str][source]¶
+
+Parameters:
+lines (str) – a text string to tokenize.
+
+Returns:
+a token list after regex.
+
+Return type:
+List[str]
+
+
+
+Parameters:
+lines (str) – a text string to tokenize.
+
+lines (str) – a text string to tokenize.
+Returns:
+a token list after regex.
+
+a token list after regex.
+Return type:
+List[str]
+
+List[str]
+BERTTokenizer¶
+
+class torchtext.transforms.BERTTokenizer(vocab_path: str, do_lower_case: bool = True, strip_accents: Optional[bool] = None, return_tokens=False, never_split: Optional[List[str]] = None)[source]¶
+Transform for BERT Tokenizer.
+Based on WordPiece algorithm introduced in paper:
+https://static.googleusercontent.com/media/research.google.com/ja//pubs/archive/37842.pdf
+The backend kernel implementation is taken and modified from https://github.com/LieluoboAi/radish.
+See PR https://github.com/pytorch/text/pull/1707 summary for more details.
+The below code snippet shows how to use the BERT tokenizer using the pre-trained vocab files.
+
+Example>>> from torchtext.transforms import BERTTokenizer
+>>> VOCAB_FILE = "https://huggingface.co/bert-base-uncased/resolve/main/vocab.txt"
+>>> tokenizer = BERTTokenizer(vocab_path=VOCAB_FILE, do_lower_case=True, return_tokens=True)
+>>> tokenizer("Hello World, How are you!") # single sentence input
+>>> tokenizer(["Hello World","How are you!"]) # batch input
+
+
+
+
+
+Parameters:
+
+vocab_path (str) – Path to pre-trained vocabulary file. The path can be either local or URL.
+do_lower_case (Optional[bool]) – Indicate whether to do lower case. (default: True)
+strip_accents (Optional[bool]) – Indicate whether to strip accents. (default: None)
+return_tokens (bool) – Indicate whether to return tokens. If false, returns corresponding token IDs as strings (default: False)
+never_split (Optional[List[str]]) – Collection of tokens which will not be split during tokenization. (default: None)
+
+
+
+
+
+forward(input: Any) → Any[source]¶
+
+Parameters:
+input (Union[str, List[str]]) – Input sentence or list of sentences on which to apply tokenizer.
+
+Returns:
+tokenized text
+
+Return type:
+Union[List[str], List[List(str)]]
+
+
+
+
+Transform for BERT Tokenizer.
+Based on WordPiece algorithm introduced in paper:
+https://static.googleusercontent.com/media/research.google.com/ja//pubs/archive/37842.pdf
+The backend kernel implementation is taken and modified from https://github.com/LieluoboAi/radish.
+See PR https://github.com/pytorch/text/pull/1707 summary for more details.
+The below code snippet shows how to use the BERT tokenizer using the pre-trained vocab files.
+Example
+>>> from torchtext.transforms import BERTTokenizer
+>>> VOCAB_FILE = "https://huggingface.co/bert-base-uncased/resolve/main/vocab.txt"
+>>> tokenizer = BERTTokenizer(vocab_path=VOCAB_FILE, do_lower_case=True, return_tokens=True)
+>>> tokenizer("Hello World, How are you!") # single sentence input
+>>> tokenizer(["Hello World","How are you!"]) # batch input
+
+
+
+>>> from torchtext.transforms import BERTTokenizer
+>>> VOCAB_FILE = "https://huggingface.co/bert-base-uncased/resolve/main/vocab.txt"
+>>> tokenizer = BERTTokenizer(vocab_path=VOCAB_FILE, do_lower_case=True, return_tokens=True)
+>>> tokenizer("Hello World, How are you!") # single sentence input
+>>> tokenizer(["Hello World","How are you!"]) # batch input
+
+Parameters:
+
+vocab_path (str) – Path to pre-trained vocabulary file. The path can be either local or URL.
+do_lower_case (Optional[bool]) – Indicate whether to do lower case. (default: True)
+strip_accents (Optional[bool]) – Indicate whether to strip accents. (default: None)
+return_tokens (bool) – Indicate whether to return tokens. If false, returns corresponding token IDs as strings (default: False)
+never_split (Optional[List[str]]) – Collection of tokens which will not be split during tokenization. (default: None)
+
+
+vocab_path (str) – Path to pre-trained vocabulary file. The path can be either local or URL.
+do_lower_case (Optional[bool]) – Indicate whether to do lower case. (default: True)
+strip_accents (Optional[bool]) – Indicate whether to strip accents. (default: None)
+return_tokens (bool) – Indicate whether to return tokens. If false, returns corresponding token IDs as strings (default: False)
+never_split (Optional[List[str]]) – Collection of tokens which will not be split during tokenization. (default: None)
+
+forward(input: Any) → Any[source]¶
+
+Parameters:
+input (Union[str, List[str]]) – Input sentence or list of sentences on which to apply tokenizer.
+
+Returns:
+tokenized text
+
+Return type:
+Union[List[str], List[List(str)]]
+
+
+
+Parameters:
+input (Union[str, List[str]]) – Input sentence or list of sentences on which to apply tokenizer.
+
+input (Union[str, List[str]]) – Input sentence or list of sentences on which to apply tokenizer.
+Returns:
+tokenized text
+
+tokenized text
+Return type:
+Union[List[str], List[List(str)]]
+
+Union[List[str], List[List(str)]]
+VocabTransform¶
+
+class torchtext.transforms.VocabTransform(vocab: Vocab)[source]¶
+Vocab transform to convert input batch of tokens into corresponding token ids
+
+Parameters:
+vocab – an instance of torchtext.vocab.Vocab class.
+
+
+Example
+>>> import torch
+>>> from torchtext.vocab import vocab
+>>> from torchtext.transforms import VocabTransform
+>>> from collections import OrderedDict
+>>> vocab_obj = vocab(OrderedDict([('a', 1), ('b', 1), ('c', 1)]))
+>>> vocab_transform = VocabTransform(vocab_obj)
+>>> output = vocab_transform([['a','b'],['a','b','c']])
+>>> jit_vocab_transform = torch.jit.script(vocab_transform)
+
+
+
+Tutorials using VocabTransform:
+SST-2 Binary text classification with XLM-RoBERTa model
+SST-2 Binary text classification with XLM-RoBERTa model
+
+
+
+
+forward(input: Any) → Any[source]¶
+
+Parameters:
+input (Union[List[str], List[List[str]]]) – Input batch of token to convert to correspnding token ids
+
+Returns:
+Converted input into corresponding token ids
+
+Return type:
+Union[List[int], List[List[int]]]
+
+
+
+
+Vocab transform to convert input batch of tokens into corresponding token ids
+Parameters:
+vocab – an instance of torchtext.vocab.Vocab class.
+
+vocab – an instance of torchtext.vocab.Vocab class.
+Example
+>>> import torch
+>>> from torchtext.vocab import vocab
+>>> from torchtext.transforms import VocabTransform
+>>> from collections import OrderedDict
+>>> vocab_obj = vocab(OrderedDict([('a', 1), ('b', 1), ('c', 1)]))
+>>> vocab_transform = VocabTransform(vocab_obj)
+>>> output = vocab_transform([['a','b'],['a','b','c']])
+>>> jit_vocab_transform = torch.jit.script(vocab_transform)
+
+Tutorials using VocabTransform:
+
+SST-2 Binary text classification with XLM-RoBERTa model
+SST-2 Binary text classification with XLM-RoBERTa model
+
+SST-2 Binary text classification with XLM-RoBERTa model
+
+forward(input: Any) → Any[source]¶
+
+Parameters:
+input (Union[List[str], List[List[str]]]) – Input batch of token to convert to correspnding token ids
+
+Returns:
+Converted input into corresponding token ids
+
+Return type:
+Union[List[int], List[List[int]]]
+
+
+
+Parameters:
+input (Union[List[str], List[List[str]]]) – Input batch of token to convert to correspnding token ids
+
+input (Union[List[str], List[List[str]]]) – Input batch of token to convert to correspnding token ids
+Returns:
+Converted input into corresponding token ids
+
+Converted input into corresponding token ids
+Return type:
+Union[List[int], List[List[int]]]
+
+Union[List[int], List[List[int]]]
+ToTensor¶
+
+class torchtext.transforms.ToTensor(padding_value: Optional[int] = None, dtype: dtype = torch.int64)[source]¶
+Convert input to torch tensor
+
+Parameters:
+
+padding_value (Optional[int]) – Pad value to make each input in the batch of length equal to the longest sequence in the batch.
+dtype (torch.dtype) – torch.dtype of output tensor
+
+
+
+
+
+forward(input: Any) → Tensor[source]¶
+
+Parameters:
+input (Union[List[int], List[List[int]]]) – Sequence or batch of token ids
+
+Return type:
+Tensor
+
+
+
+
+Convert input to torch tensor
+Parameters:
+
+padding_value (Optional[int]) – Pad value to make each input in the batch of length equal to the longest sequence in the batch.
+dtype (torch.dtype) – torch.dtype of output tensor
+
+
+padding_value (Optional[int]) – Pad value to make each input in the batch of length equal to the longest sequence in the batch.
+dtype (torch.dtype) – torch.dtype of output tensor
+
+forward(input: Any) → Tensor[source]¶
+
+Parameters:
+input (Union[List[int], List[List[int]]]) – Sequence or batch of token ids
+
+Return type:
+Tensor
+
+
+
+Parameters:
+input (Union[List[int], List[List[int]]]) – Sequence or batch of token ids
+
+input (Union[List[int], List[List[int]]]) – Sequence or batch of token ids
+Return type:
+Tensor
+
+Tensor
+LabelToIndex¶
+
+class torchtext.transforms.LabelToIndex(label_names: Optional[List[str]] = None, label_path: Optional[str] = None, sort_names=False)[source]¶
+Transform labels from string names to ids.
+
+Parameters:
+
+label_names (Optional[List[str]]) – a list of unique label names
+label_path (Optional[str]) – a path to file containing unique label names containing 1 label per line. Note that either label_names or label_path should be supplied
+but not both.
+
+
+
+
+
+forward(input: Any) → Any[source]¶
+
+Parameters:
+input (Union[str, List[str]]) – Input labels to convert to corresponding ids
+
+Return type:
+Union[int, List[int]]
+
+
+
+
+Transform labels from string names to ids.
+Parameters:
+
+label_names (Optional[List[str]]) – a list of unique label names
+label_path (Optional[str]) – a path to file containing unique label names containing 1 label per line. Note that either label_names or label_path should be supplied
+but not both.
+
+
+label_names (Optional[List[str]]) – a list of unique label names
+label_path (Optional[str]) – a path to file containing unique label names containing 1 label per line. Note that either label_names or label_path should be supplied
+but not both.
+
+forward(input: Any) → Any[source]¶
+
+Parameters:
+input (Union[str, List[str]]) – Input labels to convert to corresponding ids
+
+Return type:
+Union[int, List[int]]
+
+
+
+Parameters:
+input (Union[str, List[str]]) – Input labels to convert to corresponding ids
+
+input (Union[str, List[str]]) – Input labels to convert to corresponding ids
+Return type:
+Union[int, List[int]]
+
+Union[int, List[int]]
+Truncate¶
+
+class torchtext.transforms.Truncate(max_seq_len: int)[source]¶
+Truncate input sequence
+
+Parameters:
+max_seq_len (int) – The maximum allowable length for input sequence
+
+
+
+Tutorials using Truncate:
+SST-2 Binary text classification with XLM-RoBERTa model
+SST-2 Binary text classification with XLM-RoBERTa model
+
+
+
+
+forward(input: Any) → Any[source]¶
+
+Parameters:
+input (Union[List[Union[str, int]], List[List[Union[str, int]]]]) – Input sequence or batch of sequence to be truncated
+
+Returns:
+Truncated sequence
+
+Return type:
+Union[List[Union[str, int]], List[List[Union[str, int]]]]
+
+
+
+
+Truncate input sequence
+Parameters:
+max_seq_len (int) – The maximum allowable length for input sequence
+
+max_seq_len (int) – The maximum allowable length for input sequence
+Tutorials using Truncate:
+
+SST-2 Binary text classification with XLM-RoBERTa model
+SST-2 Binary text classification with XLM-RoBERTa model
+
+SST-2 Binary text classification with XLM-RoBERTa model
+
+forward(input: Any) → Any[source]¶
+
+Parameters:
+input (Union[List[Union[str, int]], List[List[Union[str, int]]]]) – Input sequence or batch of sequence to be truncated
+
+Returns:
+Truncated sequence
+
+Return type:
+Union[List[Union[str, int]], List[List[Union[str, int]]]]
+
+
+
+Parameters:
+input (Union[List[Union[str, int]], List[List[Union[str, int]]]]) – Input sequence or batch of sequence to be truncated
+
+input (Union[List[Union[str, int]], List[List[Union[str, int]]]]) – Input sequence or batch of sequence to be truncated
+Returns:
+Truncated sequence
+
+Truncated sequence
+Return type:
+Union[List[Union[str, int]], List[List[Union[str, int]]]]
+
+Union[List[Union[str, int]], List[List[Union[str, int]]]]
+AddToken¶
+
+class torchtext.transforms.AddToken(token: Union[int, str], begin: bool = True)[source]¶
+Add token to beginning or end of sequence
+
+Parameters:
+
+token (Union[int, str]) – The token to be added
+begin (bool, optional) – Whether to insert token at start or end or sequence, defaults to True
+
+
+
+
+Tutorials using AddToken:
+SST-2 Binary text classification with XLM-RoBERTa model
+SST-2 Binary text classification with XLM-RoBERTa model
+
+
+
+
+forward(input: Any) → Any[source]¶
+
+Parameters:
+input (Union[List[Union[str, int]], List[List[Union[str, int]]]]) – Input sequence or batch
+
+
+
+
+Add token to beginning or end of sequence
+Parameters:
+
+token (Union[int, str]) – The token to be added
+begin (bool, optional) – Whether to insert token at start or end or sequence, defaults to True
+
+
+token (Union[int, str]) – The token to be added
+begin (bool, optional) – Whether to insert token at start or end or sequence, defaults to True
+Tutorials using AddToken:
+
+SST-2 Binary text classification with XLM-RoBERTa model
+SST-2 Binary text classification with XLM-RoBERTa model
+
+SST-2 Binary text classification with XLM-RoBERTa model
+
+forward(input: Any) → Any[source]¶
+
+Parameters:
+input (Union[List[Union[str, int]], List[List[Union[str, int]]]]) – Input sequence or batch
+
+
+
+Parameters:
+input (Union[List[Union[str, int]], List[List[Union[str, int]]]]) – Input sequence or batch
+
+input (Union[List[Union[str, int]], List[List[Union[str, int]]]]) – Input sequence or batch
+Sequential¶
+
+class torchtext.transforms.Sequential(*args: Module)[source]¶
+
+class torchtext.transforms.Sequential(arg: OrderedDict[str, Module])
+A container to host a sequence of text transforms.
+
+Tutorials using Sequential:
+SST-2 Binary text classification with XLM-RoBERTa model
+SST-2 Binary text classification with XLM-RoBERTa model
+
+
+
+
+forward(input: Any) → Any[source]¶
+
+Parameters:
+input (Any) – Input sequence or batch. The input type must be supported by the first transform in the sequence.
+
+
+
+
+A container to host a sequence of text transforms.
+Tutorials using Sequential:
+
+SST-2 Binary text classification with XLM-RoBERTa model
+SST-2 Binary text classification with XLM-RoBERTa model
+
+SST-2 Binary text classification with XLM-RoBERTa model
+
+forward(input: Any) → Any[source]¶
+
+Parameters:
+input (Any) – Input sequence or batch. The input type must be supported by the first transform in the sequence.
+
+
+
+Parameters:
+input (Any) – Input sequence or batch. The input type must be supported by the first transform in the sequence.
+
+input (Any) – Input sequence or batch. The input type must be supported by the first transform in the sequence.
+PadTransform¶
+
+class torchtext.transforms.PadTransform(max_length: int, pad_value: int)[source]¶
+Pad tensor to a fixed length with given padding value.
+
+Parameters:
+
+max_length (int) – Maximum length to pad to
+pad_value (bool) – Value to pad the tensor with
+
+
+
+
+
+forward(x: Tensor) → Tensor[source]¶
+
+Parameters:
+x (Tensor) – The tensor to pad
+
+Returns:
+Tensor padded up to max_length with pad_value
+
+Return type:
+Tensor
+
+
+
+
+Pad tensor to a fixed length with given padding value.
+Parameters:
+
+max_length (int) – Maximum length to pad to
+pad_value (bool) – Value to pad the tensor with
+
+
+max_length (int) – Maximum length to pad to
+pad_value (bool) – Value to pad the tensor with
+
+forward(x: Tensor) → Tensor[source]¶
+
+Parameters:
+x (Tensor) – The tensor to pad
+
+Returns:
+Tensor padded up to max_length with pad_value
+
+Return type:
+Tensor
+
+
+
+Parameters:
+x (Tensor) – The tensor to pad
+
+x (Tensor) – The tensor to pad
+Returns:
+Tensor padded up to max_length with pad_value
+
+Tensor padded up to max_length with pad_value
+Return type:
+Tensor
+
+Tensor
+StrToIntTransform¶
+
+class torchtext.transforms.StrToIntTransform[source]¶
+Convert string tokens to integers (either single sequence or batch).
+
+
+forward(input: Any) → Any[source]¶
+
+Parameters:
+input (Union[List[str], List[List[str]]]) – sequence or batch of string tokens to convert
+
+Returns:
+sequence or batch converted into corresponding token ids
+
+Return type:
+Union[List[int], List[List[int]]]
+
+
+
+
+Convert string tokens to integers (either single sequence or batch).
+
+forward(input: Any) → Any[source]¶
+
+Parameters:
+input (Union[List[str], List[List[str]]]) – sequence or batch of string tokens to convert
+
+Returns:
+sequence or batch converted into corresponding token ids
+
+Return type:
+Union[List[int], List[List[int]]]
+
+
+
+Parameters:
+input (Union[List[str], List[List[str]]]) – sequence or batch of string tokens to convert
+
+input (Union[List[str], List[List[str]]]) – sequence or batch of string tokens to convert
+Returns:
+sequence or batch converted into corresponding token ids
+
+sequence or batch converted into corresponding token ids
+Return type:
+Union[List[int], List[List[int]]]
+
+Union[List[int], List[List[int]]]
+CharBPETokenizer¶
+
+class torchtext.transforms.CharBPETokenizer(bpe_encoder_path: str, bpe_merges_path: str, return_tokens: bool = False, unk_token: Optional[str] = None, suffix: Optional[str] = None, special_tokens: Optional[List[str]] = None)[source]¶
+Transform for a Character Byte-Pair-Encoding Tokenizer.
+:param : param bpe_encoder_path: Path to the BPE encoder json file.
+:param : type bpe_encoder_path: str
+:param : param bpe_merges_path: Path to the BPE merges text file.
+:param : type bpe_merges_path: str
+:param : param return_tokens: Indicate whether to return split tokens. If False, it will return encoded token IDs (default: False).
+:param : type return_tokens: bool
+:param : param unk_token: The unknown token. If provided, it must exist in encoder.
+:param : type unk_token: Optional[str]
+:param : param suffix: The suffix to be used for every subword that is an end-of-word.
+:param : type suffix: Optional[str]
+:param : param special_tokens: Special tokens which should not be split into individual characters. If provided, these must exist in encoder.
+:param : type special_tokens: Optional[List[str]]
+
+
+forward(input: Union[str, List[str]]) → Union[List, List[List]][source]¶
+Forward method of module encodes strings or list of strings into token ids
+
+Parameters:
+input – Input sentence or list of sentences on which to apply tokenizer.
+
+Returns:
+A list or list of lists of token IDs
+
+
+
+
+Transform for a Character Byte-Pair-Encoding Tokenizer.
+:param : param bpe_encoder_path: Path to the BPE encoder json file.
+:param : type bpe_encoder_path: str
+:param : param bpe_merges_path: Path to the BPE merges text file.
+:param : type bpe_merges_path: str
+:param : param return_tokens: Indicate whether to return split tokens. If False, it will return encoded token IDs (default: False).
+:param : type return_tokens: bool
+:param : param unk_token: The unknown token. If provided, it must exist in encoder.
+:param : type unk_token: Optional[str]
+:param : param suffix: The suffix to be used for every subword that is an end-of-word.
+:param : type suffix: Optional[str]
+:param : param special_tokens: Special tokens which should not be split into individual characters. If provided, these must exist in encoder.
+:param : type special_tokens: Optional[List[str]]
+
+forward(input: Union[str, List[str]]) → Union[List, List[List]][source]¶
+Forward method of module encodes strings or list of strings into token ids
+
+Parameters:
+input – Input sentence or list of sentences on which to apply tokenizer.
+
+Returns:
+A list or list of lists of token IDs
+
+
+
+Forward method of module encodes strings or list of strings into token ids
+Parameters:
+input – Input sentence or list of sentences on which to apply tokenizer.
+
+input – Input sentence or list of sentences on which to apply tokenizer.
+Returns:
+A list or list of lists of token IDs
+
+A list or list of lists of token IDs 
+
+source: https://pytorch.org/text/stable/functional.html 
+content: 
+
+torchtext.functional¶
+to_tensor¶
+
+torchtext.functional.to_tensor(input: Any, padding_value: Optional[int] = None, dtype: dtype = torch.int64) → Tensor[source]¶
+Convert input to torch tensor
+
+Parameters:
+
+padding_value (Optional[int]) – Pad value to make each input in the batch of length equal to the longest sequence in the batch.
+dtype (torch.dtype) – torch.dtype of output tensor
+input (Union[List[int], List[List[int]]]) – Sequence or batch of token ids
+
+
+Return type:
+Tensor
+
+
+
+Tutorials using to_tensor:
+SST-2 Binary text classification with XLM-RoBERTa model
+SST-2 Binary text classification with XLM-RoBERTa model
+
+
+
+Convert input to torch tensor
+Parameters:
+
+padding_value (Optional[int]) – Pad value to make each input in the batch of length equal to the longest sequence in the batch.
+dtype (torch.dtype) – torch.dtype of output tensor
+input (Union[List[int], List[List[int]]]) – Sequence or batch of token ids
+
+
+padding_value (Optional[int]) – Pad value to make each input in the batch of length equal to the longest sequence in the batch.
+dtype (torch.dtype) – torch.dtype of output tensor
+input (Union[List[int], List[List[int]]]) – Sequence or batch of token ids
+Return type:
+Tensor
+
+Tensor
+Tutorials using to_tensor:
+
+SST-2 Binary text classification with XLM-RoBERTa model
+SST-2 Binary text classification with XLM-RoBERTa model
+
+SST-2 Binary text classification with XLM-RoBERTa model
+truncate¶
+
+torchtext.functional.truncate(input: Any, max_seq_len: int) → Any[source]¶
+Truncate input sequence or batch
+
+Parameters:
+
+input (Union[List[Union[str, int]], List[List[Union[str, int]]]]) – Input sequence or batch to be truncated
+max_seq_len (int) – Maximum length beyond which input is discarded
+
+
+Returns:
+Truncated sequence
+
+Return type:
+Union[List[Union[str, int]], List[List[Union[str, int]]]]
+
+
+
+Truncate input sequence or batch
+Parameters:
+
+input (Union[List[Union[str, int]], List[List[Union[str, int]]]]) – Input sequence or batch to be truncated
+max_seq_len (int) – Maximum length beyond which input is discarded
+
+
+input (Union[List[Union[str, int]], List[List[Union[str, int]]]]) – Input sequence or batch to be truncated
+max_seq_len (int) – Maximum length beyond which input is discarded
+Returns:
+Truncated sequence
+
+Truncated sequence
+Return type:
+Union[List[Union[str, int]], List[List[Union[str, int]]]]
+
+Union[List[Union[str, int]], List[List[Union[str, int]]]]
+add_token¶
+
+torchtext.functional.add_token(input: Any, token_id: Any, begin: bool = True) → Any[source]¶
+Add token to start or end of sequence
+
+Parameters:
+
+input (Union[List[Union[str, int]], List[List[Union[str, int]]]]) – Input sequence or batch
+token_id (Union[str, int]) – token to be added
+begin (bool, optional) – Whether to insert token at start or end or sequence, defaults to True
+
+
+Returns:
+sequence or batch with token_id added to begin or end or input
+
+Return type:
+Union[List[Union[str, int]], List[List[Union[str, int]]]]
+
+
+
+Add token to start or end of sequence
+Parameters:
+
+input (Union[List[Union[str, int]], List[List[Union[str, int]]]]) – Input sequence or batch
+token_id (Union[str, int]) – token to be added
+begin (bool, optional) – Whether to insert token at start or end or sequence, defaults to True
+
+
+input (Union[List[Union[str, int]], List[List[Union[str, int]]]]) – Input sequence or batch
+token_id (Union[str, int]) – token to be added
+begin (bool, optional) – Whether to insert token at start or end or sequence, defaults to True
+Returns:
+sequence or batch with token_id added to begin or end or input
+
+sequence or batch with token_id added to begin or end or input
+Return type:
+Union[List[Union[str, int]], List[List[Union[str, int]]]]
+
+Union[List[Union[str, int]], List[List[Union[str, int]]]]
+str_to_int¶
+
+torchtext.functional.str_to_int(input: Any) → Any[source]¶
+Convert string tokens to integers (either single sequence or batch).
+
+Parameters:
+input (Union[List[str], List[List[str]]]) – Input sequence or batch
+
+Returns:
+Sequence or batch of string tokens converted to integers
+
+Return type:
+Union[List[int], List[List[int]]]
+
+
+
+Convert string tokens to integers (either single sequence or batch).
+Parameters:
+input (Union[List[str], List[List[str]]]) – Input sequence or batch
+
+input (Union[List[str], List[List[str]]]) – Input sequence or batch
+Returns:
+Sequence or batch of string tokens converted to integers
+
+Sequence or batch of string tokens converted to integers
+Return type:
+Union[List[int], List[List[int]]]
+
+Union[List[int], List[List[int]]] 
+
+source: https://pytorch.org/text/stable/models.html 
+content: 
+
+torchtext.models¶
+RobertaBundle¶
+
+class torchtext.models.RobertaBundle(_params: torchtext.models.RobertaEncoderParams, _path: Optional[str] = None, _head: Optional[torch.nn.Module] = None, transform: Optional[Callable] = None)[source]¶
+
+Example - Pretrained base xlmr encoder>>> import torch, torchtext
+>>> from torchtext.functional import to_tensor
+>>> xlmr_base = torchtext.models.XLMR_BASE_ENCODER
+>>> model = xlmr_base.get_model()
+>>> transform = xlmr_base.transform()
+>>> input_batch = ["Hello world", "How are you!"]
+>>> model_input = to_tensor(transform(input_batch), padding_value=1)
+>>> output = model(model_input)
+>>> output.shape
+torch.Size([2, 6, 768])
+
+
+
+Example - Pretrained large xlmr encoder attached to un-initialized classification head>>> import torch, torchtext
+>>> from torchtext.models import RobertaClassificationHead
+>>> from torchtext.functional import to_tensor
+>>> xlmr_large = torchtext.models.XLMR_LARGE_ENCODER
+>>> classifier_head = torchtext.models.RobertaClassificationHead(num_classes=2, input_dim = 1024)
+>>> model = xlmr_large.get_model(head=classifier_head)
+>>> transform = xlmr_large.transform()
+>>> input_batch = ["Hello world", "How are you!"]
+>>> model_input = to_tensor(transform(input_batch), padding_value=1)
+>>> output = model(model_input)
+>>> output.shape
+torch.Size([1, 2])
+
+
+
+Example - User-specified configuration and checkpoint>>> from torchtext.models import RobertaEncoderConf, RobertaBundle, RobertaClassificationHead
+>>> model_weights_path = "https://download.pytorch.org/models/text/xlmr.base.encoder.pt"
+>>> encoder_conf = RobertaEncoderConf(vocab_size=250002)
+>>> classifier_head = RobertaClassificationHead(num_classes=2, input_dim=768)
+>>> model = RobertaBundle.build_model(encoder_conf=encoder_conf, head=classifier_head, checkpoint=model_weights_path)
+
+
+
+
+
+
+get_model(head: Optional[torch.nn.Module] = None, load_weights: bool = True, freeze_encoder: bool = False, *, dl_kwargs=None) → torchtext.models.RobertaModel[source]¶
+
+Parameters:
+
+head (nn.Module) – A module to be attached to the encoder to perform specific task. If provided, it will replace the default member head (Default: None)
+load_weights (bool) – Indicates whether or not to load weights if available. (Default: True)
+freeze_encoder (bool) – Indicates whether or not to freeze the encoder weights. (Default: False)
+dl_kwargs (dictionary of keyword arguments) – Passed to torch.hub.load_state_dict_from_url(). (Default: None)
+
+
+
+
+
+Example - Pretrained base xlmr encoder
+>>> import torch, torchtext
+>>> from torchtext.functional import to_tensor
+>>> xlmr_base = torchtext.models.XLMR_BASE_ENCODER
+>>> model = xlmr_base.get_model()
+>>> transform = xlmr_base.transform()
+>>> input_batch = ["Hello world", "How are you!"]
+>>> model_input = to_tensor(transform(input_batch), padding_value=1)
+>>> output = model(model_input)
+>>> output.shape
+torch.Size([2, 6, 768])
+
+
+
+>>> import torch, torchtext
+>>> from torchtext.functional import to_tensor
+>>> xlmr_base = torchtext.models.XLMR_BASE_ENCODER
+>>> model = xlmr_base.get_model()
+>>> transform = xlmr_base.transform()
+>>> input_batch = ["Hello world", "How are you!"]
+>>> model_input = to_tensor(transform(input_batch), padding_value=1)
+>>> output = model(model_input)
+>>> output.shape
+torch.Size([2, 6, 768])
+
+Example - Pretrained large xlmr encoder attached to un-initialized classification head
+>>> import torch, torchtext
+>>> from torchtext.models import RobertaClassificationHead
+>>> from torchtext.functional import to_tensor
+>>> xlmr_large = torchtext.models.XLMR_LARGE_ENCODER
+>>> classifier_head = torchtext.models.RobertaClassificationHead(num_classes=2, input_dim = 1024)
+>>> model = xlmr_large.get_model(head=classifier_head)
+>>> transform = xlmr_large.transform()
+>>> input_batch = ["Hello world", "How are you!"]
+>>> model_input = to_tensor(transform(input_batch), padding_value=1)
+>>> output = model(model_input)
+>>> output.shape
+torch.Size([1, 2])
+
+
+
+>>> import torch, torchtext
+>>> from torchtext.models import RobertaClassificationHead
+>>> from torchtext.functional import to_tensor
+>>> xlmr_large = torchtext.models.XLMR_LARGE_ENCODER
+>>> classifier_head = torchtext.models.RobertaClassificationHead(num_classes=2, input_dim = 1024)
+>>> model = xlmr_large.get_model(head=classifier_head)
+>>> transform = xlmr_large.transform()
+>>> input_batch = ["Hello world", "How are you!"]
+>>> model_input = to_tensor(transform(input_batch), padding_value=1)
+>>> output = model(model_input)
+>>> output.shape
+torch.Size([1, 2])
+
+Example - User-specified configuration and checkpoint
+>>> from torchtext.models import RobertaEncoderConf, RobertaBundle, RobertaClassificationHead
+>>> model_weights_path = "https://download.pytorch.org/models/text/xlmr.base.encoder.pt"
+>>> encoder_conf = RobertaEncoderConf(vocab_size=250002)
+>>> classifier_head = RobertaClassificationHead(num_classes=2, input_dim=768)
+>>> model = RobertaBundle.build_model(encoder_conf=encoder_conf, head=classifier_head, checkpoint=model_weights_path)
+
+
+
+>>> from torchtext.models import RobertaEncoderConf, RobertaBundle, RobertaClassificationHead
+>>> model_weights_path = "https://download.pytorch.org/models/text/xlmr.base.encoder.pt"
+>>> encoder_conf = RobertaEncoderConf(vocab_size=250002)
+>>> classifier_head = RobertaClassificationHead(num_classes=2, input_dim=768)
+>>> model = RobertaBundle.build_model(encoder_conf=encoder_conf, head=classifier_head, checkpoint=model_weights_path)
+
+
+get_model(head: Optional[torch.nn.Module] = None, load_weights: bool = True, freeze_encoder: bool = False, *, dl_kwargs=None) → torchtext.models.RobertaModel[source]¶
+
+Parameters:
+
+head (nn.Module) – A module to be attached to the encoder to perform specific task. If provided, it will replace the default member head (Default: None)
+load_weights (bool) – Indicates whether or not to load weights if available. (Default: True)
+freeze_encoder (bool) – Indicates whether or not to freeze the encoder weights. (Default: False)
+dl_kwargs (dictionary of keyword arguments) – Passed to torch.hub.load_state_dict_from_url(). (Default: None)
+
+
+
+
+Parameters:
+
+head (nn.Module) – A module to be attached to the encoder to perform specific task. If provided, it will replace the default member head (Default: None)
+load_weights (bool) – Indicates whether or not to load weights if available. (Default: True)
+freeze_encoder (bool) – Indicates whether or not to freeze the encoder weights. (Default: False)
+dl_kwargs (dictionary of keyword arguments) – Passed to torch.hub.load_state_dict_from_url(). (Default: None)
+
+
+head (nn.Module) – A module to be attached to the encoder to perform specific task. If provided, it will replace the default member head (Default: None)
+load_weights (bool) – Indicates whether or not to load weights if available. (Default: True)
+freeze_encoder (bool) – Indicates whether or not to freeze the encoder weights. (Default: False)
+dl_kwargs (dictionary of keyword arguments) – Passed to torch.hub.load_state_dict_from_url(). (Default: None)
+XLMR_BASE_ENCODER¶
+
+torchtext.models.XLMR_BASE_ENCODER¶
+XLM-R Encoder with Base configuration
+The XLM-RoBERTa model was proposed in Unsupervised Cross-lingual Representation Learning
+at Scale <https://arxiv.org/abs/1911.02116>. It is a large multi-lingual language model,
+trained on 2.5TB of filtered CommonCrawl data and based on the RoBERTa model architecture.
+Originally published by the authors of XLM-RoBERTa under MIT License
+and redistributed with the same license.
+[License,
+Source]
+Please refer to torchtext.models.RobertaBundle() for the usage.
+
+XLM-R Encoder with Base configuration
+The XLM-RoBERTa model was proposed in Unsupervised Cross-lingual Representation Learning
+at Scale <https://arxiv.org/abs/1911.02116>. It is a large multi-lingual language model,
+trained on 2.5TB of filtered CommonCrawl data and based on the RoBERTa model architecture.
+Originally published by the authors of XLM-RoBERTa under MIT License
+and redistributed with the same license.
+[License,
+Source]
+Please refer to torchtext.models.RobertaBundle() for the usage.
+XLMR_LARGE_ENCODER¶
+
+torchtext.models.XLMR_LARGE_ENCODER¶
+XLM-R Encoder with Large configuration
+The XLM-RoBERTa model was proposed in Unsupervised Cross-lingual Representation Learning
+at Scale <https://arxiv.org/abs/1911.02116>. It is a large multi-lingual language model,
+trained on 2.5TB of filtered CommonCrawl data and based on the RoBERTa model architecture.
+Originally published by the authors of XLM-RoBERTa under MIT License
+and redistributed with the same license.
+[License,
+Source]
+Please refer to torchtext.models.RobertaBundle() for the usage.
+
+XLM-R Encoder with Large configuration
+The XLM-RoBERTa model was proposed in Unsupervised Cross-lingual Representation Learning
+at Scale <https://arxiv.org/abs/1911.02116>. It is a large multi-lingual language model,
+trained on 2.5TB of filtered CommonCrawl data and based on the RoBERTa model architecture.
+Originally published by the authors of XLM-RoBERTa under MIT License
+and redistributed with the same license.
+[License,
+Source]
+Please refer to torchtext.models.RobertaBundle() for the usage.
+ROBERTA_BASE_ENCODER¶
+
+torchtext.models.ROBERTA_BASE_ENCODER¶
+Roberta Encoder with Base configuration
+RoBERTa iterates on BERT’s pretraining procedure, including training the model longer,
+with bigger batches over more data; removing the next sentence prediction objective;
+training on longer sequences; and dynamically changing the masking pattern applied
+to the training data.
+The RoBERTa model was pretrained on the reunion of five datasets: BookCorpus,
+English Wikipedia, CC-News, OpenWebText, and STORIES. Together theses datasets
+contain over a 160GB of text.
+Originally published by the authors of RoBERTa under MIT License
+and redistributed with the same license.
+[License,
+Source]
+Please refer to torchtext.models.RobertaBundle() for the usage.
+
+Roberta Encoder with Base configuration
+RoBERTa iterates on BERT’s pretraining procedure, including training the model longer,
+with bigger batches over more data; removing the next sentence prediction objective;
+training on longer sequences; and dynamically changing the masking pattern applied
+to the training data.
+The RoBERTa model was pretrained on the reunion of five datasets: BookCorpus,
+English Wikipedia, CC-News, OpenWebText, and STORIES. Together theses datasets
+contain over a 160GB of text.
+Originally published by the authors of RoBERTa under MIT License
+and redistributed with the same license.
+[License,
+Source]
+Please refer to torchtext.models.RobertaBundle() for the usage.
+ROBERTA_LARGE_ENCODER¶
+
+torchtext.models.ROBERTA_LARGE_ENCODER¶
+Roberta Encoder with Large configuration
+RoBERTa iterates on BERT’s pretraining procedure, including training the model longer,
+with bigger batches over more data; removing the next sentence prediction objective;
+training on longer sequences; and dynamically changing the masking pattern applied
+to the training data.
+The RoBERTa model was pretrained on the reunion of five datasets: BookCorpus,
+English Wikipedia, CC-News, OpenWebText, and STORIES. Together theses datasets
+contain over a 160GB of text.
+Originally published by the authors of RoBERTa under MIT License
+and redistributed with the same license.
+[License,
+Source]
+Please refer to torchtext.models.RobertaBundle() for the usage.
+
+Roberta Encoder with Large configuration
+RoBERTa iterates on BERT’s pretraining procedure, including training the model longer,
+with bigger batches over more data; removing the next sentence prediction objective;
+training on longer sequences; and dynamically changing the masking pattern applied
+to the training data.
+The RoBERTa model was pretrained on the reunion of five datasets: BookCorpus,
+English Wikipedia, CC-News, OpenWebText, and STORIES. Together theses datasets
+contain over a 160GB of text.
+Originally published by the authors of RoBERTa under MIT License
+and redistributed with the same license.
+[License,
+Source]
+Please refer to torchtext.models.RobertaBundle() for the usage.
