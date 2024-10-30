@@ -4,7 +4,7 @@ This project implements a Retrieval-Augmented Generation (RAG) agent using Llama
 
 ## Workflow Diagram
 
-[](Multi-Agents Workflow.png)
+![Workflow diagram](Multi-Agents Workflow.png)
 
 ## Goals:
 - Train and index key aspects of your documentation as specialized bot agents (e.g.: one for conceptual content, another for tutorials and how-tos, and others for terms and glossaries, etc).
