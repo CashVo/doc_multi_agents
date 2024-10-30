@@ -2,6 +2,10 @@
 
 This project implements a Retrieval-Augmented Generation (RAG) agent using LlamaIndex and Meta's Llama 3.2 models. 
 
+## Workflow Diagram
+
+[](Multi-Agents Workflow.png)
+
 ## Goals:
 - Train and index key aspects of your documentation as specialized bot agents (e.g.: one for conceptual content, another for tutorials and how-tos, and others for terms and glossaries, etc).
 - When a user asks a question, the system analyzes the prompt to identify the type of query.
