@@ -14,6 +14,7 @@ def process_data():
             process_glossary(source, content_sources[source])
         else:
             process_urls(source, content_sources[source])
+    print("Process data completed.")
 
 def process_urls(source, urls):
     full_content = ""
